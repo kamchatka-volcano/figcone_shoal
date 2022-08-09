@@ -1,7 +1,7 @@
 #include "utils.h"
-#include "gsl_util.h"
 #include <figcone_tree/tree.h>
 #include <figcone_tree/errors.h>
+#include <gsl/util>
 #include <utility>
 #include <optional>
 

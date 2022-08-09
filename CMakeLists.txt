@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(figcone_shoal VERSION 0.9.0 DESCRIPTION "shoal parser for figcone library")
+project(figcone_shoal VERSION 0.10.0 DESCRIPTION "shoal parser for figcone library")
+include(GNUInstallDirs)
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(FIGCONE_SHOAL_SUBPROJECT OFF)
@@ -8,6 +9,7 @@ else()
     set(FIGCONE_SHOAL_SUBPROJECT ON)
 endif()
 
+include(external/gsl)
 find_package(figcone_tree 0.9.0 QUIET)
 if (NOT figcone_tree_FOUND)
     message("Configuration info: figcone_tree library wasn't found on your system, downloading it from the GitHub repository")
@@ -24,6 +26,17 @@ target_include_directories(
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+target_include_directories(
+    figcone_shoal
+    INTERFACE
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/figcone_shoal/detail/external>
+)
+
+target_include_directories(
+    figcone_shoal
+    INTERFACE
+    $<BUILD_INTERFACE:${gsl_SOURCE_DIR}/include/>
+)
 target_link_libraries(figcone_shoal INTERFACE figcone::figcone_tree)
 
 option(ENABLE_TESTS "Enable tests" OFF)
@@ -34,8 +47,8 @@ endif()
 
 option(INSTALL_FIGCONE_SHOAL "Install figcone_shoal library unconditionally" OFF)
 if (NOT FIGCONE_SHOAL_SUBPROJECT OR INSTALL_FIGCONE_SHOAL)
-    include(GNUInstallDirs)
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/figcone_shoal DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(DIRECTORY ${gsl_SOURCE_DIR}/include/gsl         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_shoal/detail/external)
 
     set(FIGCONE_SHOAL_PACK_PATH ${CMAKE_INSTALL_LIBDIR}/cmake/figcone_shoal)
     install(TARGETS figcone_shoal

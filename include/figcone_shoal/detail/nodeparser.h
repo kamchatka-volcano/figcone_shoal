@@ -2,9 +2,9 @@
 #include "paramparser.h"
 #include "stream.h"
 #include "configreadresult.h"
-#include "gsl_assert.h"
 #include <figcone_tree/tree.h>
 #include <figcone_tree/errors.h>
+#include <gsl/assert>
 #include <variant>
 
 namespace figcone::shoal::detail {
@@ -86,6 +86,60 @@ inline ConfigReadResult checkReadResult(const ConfigReadResult& readResult, cons
 
 }
 
+ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const std::string& nodeName);
+
+inline std::optional<ConfigReadResult> parseListElementNodeSection(Stream& stream, figcone::TreeNode& parent, const std::string& parentName)
+{
+    if (!parent.isList())
+        return ConfigReadResult{ConfigReadResult::NextAction::ContinueReading, {}, {}};
+
+    stream.skip(3);
+    skipWhitespace(stream, false);
+    if (stream.peek() != "\n")
+        throw ConfigError{"Wrong config node list '" + parentName + "' format:"
+                          " there can't be anything besides comments and whitespaces "
+                          "on the same line with list separator '###'", stream.position()};
+
+    auto& nodeList = parent.asList();
+    auto& newNode = nodeList.addNode(stream.position());
+    auto readResult = parseNode(stream, newNode, parentName);
+
+    auto result = checkReadResult(readResult, parentName, parent);
+    if (result.nextAction != ConfigReadResult::NextAction::ContinueReading) {
+        if (result.nextAction == ConfigReadResult::NextAction::ReturnToParentNode)
+            result.nextAction = ConfigReadResult::NextAction::ContinueReading;
+        return result;
+    }
+    return {};
+}
+
+inline std::optional<ConfigReadResult> parseNodeSection(Stream& stream, figcone::TreeNode& parent)
+{
+    auto pos = stream.position();
+    auto newNodeName = readNodeName(stream);
+    if (isBlank(newNodeName))
+        throw ConfigError{"Config node name can't be blank", pos};
+    skipWhitespace(stream);
+
+    if (parent.asItem().hasNode(newNodeName))
+        throw ConfigError{"Config node '" + newNodeName + "' already exist", pos};
+    auto& newNode = [&]() -> decltype(auto){
+        if (stream.peek(3) == "###")
+            return parent.asItem().addNodeList(newNodeName, pos);
+        else
+            return parent.asItem().addNode(newNodeName, pos);
+    }();
+
+    auto readResult = parseNode(stream, newNode, newNodeName);
+    auto result = checkReadResult(readResult, newNodeName, parent);
+    if (result.nextAction != ConfigReadResult::NextAction::ContinueReading) {
+        if (result.nextAction == ConfigReadResult::NextAction::ReturnToParentNode)
+            result.nextAction = ConfigReadResult::NextAction::ContinueReading;
+        return result;
+    }
+    return {};
+}
+
 inline ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const std::string& nodeName)
 {
     while (!stream.atEnd()) {
@@ -93,50 +147,14 @@ inline ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const
         if (std::isspace(nextChar))
             stream.skip(1);
         else if (stream.peek(3) == "###") {
-            if (!node.isList())
-                return {ConfigReadResult::NextAction::ContinueReading, {}, {}};
-
-            stream.skip(3);
-            skipWhitespace(stream, false);
-            if (stream.peek() != "\n")
-                throw ConfigError{"Wrong config node list '" + nodeName + "' format:"
-                                  " there can't be anything besides comments and whitespaces "
-                                  "on the same line with list separator '###'", stream.position()};
-
-            auto& nodeList = node.asList();
-            auto& newNode = nodeList.addNode(stream.position());
-            auto readResult = parseNode(stream, newNode, nodeName);
-
-            auto result = checkReadResult(readResult, nodeName, node);
-            if (result.nextAction != ConfigReadResult::NextAction::ContinueReading) {
-                if (result.nextAction == ConfigReadResult::NextAction::ReturnToParentNode)
-                    result.nextAction = ConfigReadResult::NextAction::ContinueReading;
-                return result;
-            }
-        } else if (nextChar == '#') {
-            auto pos = stream.position();
-            auto newNodeName = readNodeName(stream);
-            if (isBlank(newNodeName))
-                throw ConfigError{"Config node name can't be blank", pos};
-            skipWhitespace(stream);
-
-            if (node.asItem().hasNode(newNodeName))
-                throw ConfigError{"Config node '" + newNodeName + "' already exist", pos};
-            auto& newNode = [&]() -> decltype(auto){
-                if (stream.peek(3) == "###")
-                    return node.asItem().addNodeList(newNodeName, pos);
-                else
-                    return node.asItem().addNode(newNodeName, pos);
-            }();
-
-            auto readResult = parseNode(stream, newNode, newNodeName);
-            auto result = checkReadResult(readResult, newNodeName, node);
-            if (result.nextAction != ConfigReadResult::NextAction::ContinueReading) {
-                if (result.nextAction == ConfigReadResult::NextAction::ReturnToParentNode)
-                    result.nextAction = ConfigReadResult::NextAction::ContinueReading;
-                return result;
-            }
-        } else if (nextChar == '-')
+            if (auto res = parseListElementNodeSection(stream, node, nodeName))
+                return *res;
+        }
+        else if (nextChar == '#') {
+            if (auto res = parseNodeSection(stream, node))
+                return *res;
+        }
+        else if (nextChar == '-')
             return readEndToken(stream);
         else {
             auto [paramName, param] = parseParam(stream);

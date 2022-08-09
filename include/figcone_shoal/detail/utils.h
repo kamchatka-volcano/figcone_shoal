@@ -1,7 +1,7 @@
 #pragma once
 #include "stream.h"
-#include "gsl_util.h"
 #include <figcone_tree/errors.h>
+#include <gsl/util>
 #include <string>
 #include <optional>
 #include <functional>
