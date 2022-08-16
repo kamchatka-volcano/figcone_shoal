@@ -237,6 +237,49 @@ TEST(TestNodeParser, MultiLevelCloseByName)
     EXPECT_EQ(bNode.param("testInt").value(), "9");
 }
 
+TEST(TestNodeParser, MultiLevelClose)
+{
+    auto result = parse(R"(
+        foo = 5
+        bar = test
+        #c:
+          testInt = 11
+          testDouble = 12
+          #b:
+            testInt = 10
+            testString = 'Hello world'
+          -
+        -
+        #b:
+          testInt = 9
+    )");
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 2);
+    ASSERT_EQ(tree.hasParam("foo"), 1);
+    ASSERT_EQ(tree.hasParam("bar"), 1);
+    EXPECT_EQ(tree.param("foo").value(), "5");
+    EXPECT_EQ(tree.param("bar").value(), "test");
+    ASSERT_EQ(tree.nodesCount(), 2);
+    ASSERT_EQ(tree.hasNode("c"), 1);
+    ASSERT_EQ(tree.hasNode("b"), 1);
+    auto& cNode = tree.node("c").asItem();
+    ASSERT_EQ(cNode.paramsCount(), 2);
+    ASSERT_EQ(cNode.hasParam("testInt"), 1);
+    EXPECT_EQ(cNode.param("testInt").value(), "11");
+    ASSERT_EQ(cNode.hasParam("testDouble"), 1);
+    EXPECT_EQ(cNode.param("testDouble").value(), "12");
+    ASSERT_EQ(cNode.nodesCount(), 1);
+    ASSERT_EQ(cNode.hasNode("b"), 1);
+    auto& cbNode = cNode.node("b").asItem();
+    ASSERT_EQ(cbNode.paramsCount(), 2);
+    EXPECT_EQ(cbNode.param("testInt").value(), "10");
+    EXPECT_EQ(cbNode.param("testString").value(), "Hello world");
+    auto& bNode = tree.node("b").asItem();
+    ASSERT_EQ(bNode.paramsCount(), 1);
+    EXPECT_EQ(bNode.param("testInt").value(), "9");
+}
+
 TEST(TestNodeParser, CloseByUnknownNameError)
 {
     assert_exception<figcone::ConfigError>([&] {
