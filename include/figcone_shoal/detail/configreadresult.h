@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FIGCONE_SHOAL_CONFIGREADRESULT_H
+#define FIGCONE_SHOAL_CONFIGREADRESULT_H
+
 #include <figcone_tree/streamposition.h>
 #include <string>
 
@@ -16,3 +18,5 @@ struct ConfigReadResult{
 };
 
 }
+
+#endif //FIGCONE_SHOAL_CONFIGREADRESULT_H

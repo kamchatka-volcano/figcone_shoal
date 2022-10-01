@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FIGCONE_SHOAL_STREAM_H
+#define FIGCONE_SHOAL_STREAM_H
+
 #include <figcone_tree/streamposition.h>
 #include <string>
 #include <istream>
@@ -107,3 +109,5 @@ private:
 };
 
 }
+
+#endif //FIGCONE_SHOAL_STREAM_H

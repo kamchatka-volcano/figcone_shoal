@@ -1,7 +1,9 @@
-#pragma once
+#ifndef FIGCONE_SHOAL_UTILS_H
+#define FIGCONE_SHOAL_UTILS_H
+
 #include "stream.h"
+#include "external/gsl/util"
 #include <figcone_tree/errors.h>
-#include <gsl/util>
 #include <string>
 #include <optional>
 #include <functional>
@@ -89,3 +91,5 @@ inline std::optional<std::string> readQuotedString(Stream& stream)
 }
 
 }
+
+#endif //FIGCONE_SHOAL_UTILS_H

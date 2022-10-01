@@ -1,7 +1,10 @@
+#ifndef FIGCONE_SHOAL_PARAMPARSER_H
+#define FIGCONE_SHOAL_PARAMPARSER_H
+
 #include "utils.h"
+#include "external/gsl/util"
 #include <figcone_tree/tree.h>
 #include <figcone_tree/errors.h>
-#include <gsl/util>
 #include <utility>
 #include <optional>
 
@@ -126,3 +129,5 @@ inline std::pair<std::string, figcone::TreeParam> parseParam(Stream& stream)
 }
 
 }
+
+#endif //FIGCONE_SHOAL_PARAMPARSER_H

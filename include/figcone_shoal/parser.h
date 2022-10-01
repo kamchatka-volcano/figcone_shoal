@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FIGCONE_SHOAL_PARSER_H
+#define FIGCONE_SHOAL_PARSER_H
+
 #include "detail/nodeparser.h"
 #include "detail/stream.h"
 #include <figcone_tree/tree.h>
@@ -16,3 +18,5 @@ public:
     }
 };
 }
+
+#endif //FIGCONE_SHOAL_PARSER_H

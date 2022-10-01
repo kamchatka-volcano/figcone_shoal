@@ -1,10 +1,12 @@
-#pragma once
+#ifndef FIGCONE_SHOAL_NODEPARSER_H
+#define FIGCONE_SHOAL_NODEPARSER_H
+
 #include "paramparser.h"
 #include "stream.h"
 #include "configreadresult.h"
+#include "external/gsl/assert"
 #include <figcone_tree/tree.h>
 #include <figcone_tree/errors.h>
-#include <gsl/assert>
 #include <variant>
 
 namespace figcone::shoal::detail {
@@ -168,3 +170,5 @@ inline ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const
 }
 
 }
+
+#endif //FIGCONE_SHOAL_NODEPARSER_H
