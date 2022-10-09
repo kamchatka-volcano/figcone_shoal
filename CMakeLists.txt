@@ -4,18 +4,6 @@ project(figcone_shoal VERSION 0.2.0 DESCRIPTION "shoal parser for figcone librar
 include(GNUInstallDirs)
 include(external/seal_lake)
 
-SealLake_Download(
-        GIT_REPOSITORY https://github.com/microsoft/GSL
-        GIT_TAG        v4.0.0
-        DESTINATION    include/figcone_shoal/detail/external
-        DIRECTORIES    include/gsl
-        TEXT_REPLACEMENTS
-            "namespace gsl" "namespace figcone::shoal::gsl"
-            "gsl::details" "figcone::shoal::gsl::details"
-            "#include <gsl/assert>" "#include \"assert\""
-            "GSL_" "FIGCONE_SHOAL_GSL_"
-)
-
 set(INSTALL_FIGCONE_TREE ON)
 SealLake_Import(
         figcone_tree 0.11.0
@@ -23,10 +11,27 @@ SealLake_Import(
         GIT_TAG        cmake_maintenance
 )
 
-SealLake_HeaderOnlyLibrary(
+SealLake_Import(
+        Microsoft.GSL 4.0.0
+        GIT_REPOSITORY https://github.com/microsoft/GSL
+        GIT_TAG        v4.0.0
+        TEXT_REPLACEMENTS
+            "namespace gsl" "namespace figcone::shoal::gsl"
+            "gsl::details" "figcone::shoal::gsl::details"
+            "#include <gsl/assert>" "#include \"assert\""
+)
+
+SealLake_ObjectLibrary(
         NAMESPACE figcone
-        COMPILE_FEATURES cxx_std_17
-        LIBRARIES figcone::figcone_tree
+        COMPILE_FEATURES cxx_std_11
+        SOURCES
+            src/parser.cpp
+            src/nodeparser.cpp
+            src/paramparser.cpp
+            src/stream.cpp
+            src/utils.cpp
+        LIBRARIES GSL
+        INTERFACE_LIBRARIES figcone::figcone_tree
         DEPENDENCIES
             figcone_tree 0.11.0
 )

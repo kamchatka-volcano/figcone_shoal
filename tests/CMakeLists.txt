@@ -11,6 +11,7 @@ set(SRC
 SealLake_GoogleTest(
         SOURCES ${SRC}
         COMPILE_FEATURES cxx_std_17
+        INCLUDES ../src
         PROPERTIES
             CXX_EXTENSIONS OFF
         LIBRARIES figcone::figcone_shoal

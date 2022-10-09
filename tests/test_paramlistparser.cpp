@@ -1,6 +1,8 @@
 #include "assert_exception.h"
 #include <gtest/gtest.h>
 #include <figcone_shoal/parser.h>
+#include <stream.h>
+#include <paramparser.h>
 #include <sstream>
 
 namespace test_paramlistparser {

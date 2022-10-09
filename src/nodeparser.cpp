@@ -1,17 +1,14 @@
-#ifndef FIGCONE_SHOAL_NODEPARSER_H
-#define FIGCONE_SHOAL_NODEPARSER_H
-
+#include "nodeparser.h"
 #include "paramparser.h"
 #include "stream.h"
-#include "configreadresult.h"
-#include "external/gsl/assert"
+#include "utils.h"
 #include <figcone_tree/tree.h>
 #include <figcone_tree/errors.h>
-#include <variant>
+#include <gsl/assert>
 
 namespace figcone::shoal::detail {
 
-inline std::string readNodeName(Stream& stream)
+std::string readNodeName(Stream& stream)
 {
     auto firstChar = stream.read();
     Expects(firstChar == "#");
@@ -35,7 +32,7 @@ inline std::string readNodeName(Stream& stream)
     return nodeName;
 }
 
-inline ConfigReadResult readEndToken(Stream& stream)
+ConfigReadResult readEndToken(Stream& stream)
 {
     stream.skip(1);
     if (stream.atEnd() || std::isspace(stream.peek().front()))
@@ -59,8 +56,10 @@ inline ConfigReadResult readEndToken(Stream& stream)
 }
 
 
-inline ConfigReadResult checkReadResult(const ConfigReadResult& readResult, const std::string& newNodeName,
-                                        const figcone::TreeNode& parentNode)
+ConfigReadResult checkReadResult(
+        const ConfigReadResult& readResult,
+        const std::string& newNodeName,
+        const figcone::TreeNode& parentNode)
 {
     if (readResult.nextAction == ConfigReadResult::NextAction::ReturnToRootNode)
         return parentNode.isRoot() ? ConfigReadResult{ConfigReadResult::NextAction::ContinueReading, {}, {}}
@@ -88,9 +87,10 @@ inline ConfigReadResult checkReadResult(const ConfigReadResult& readResult, cons
 
 }
 
-ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const std::string& nodeName);
-
-inline std::optional<ConfigReadResult> parseListElementNodeSection(Stream& stream, figcone::TreeNode& parent, const std::string& parentName)
+std::optional<ConfigReadResult> parseListElementNodeSection(
+        Stream& stream,
+        figcone::TreeNode& parent,
+        const std::string& parentName)
 {
     if (!parent.isList())
         return ConfigReadResult{ConfigReadResult::NextAction::ContinueReading, {}, {}};
@@ -115,7 +115,9 @@ inline std::optional<ConfigReadResult> parseListElementNodeSection(Stream& strea
     return {};
 }
 
-inline std::optional<ConfigReadResult> parseNodeSection(Stream& stream, figcone::TreeNode& parent)
+std::optional<ConfigReadResult> parseNodeSection(
+        Stream& stream,
+        figcone::TreeNode& parent)
 {
     auto pos = stream.position();
     auto newNodeName = readNodeName(stream);
@@ -142,7 +144,10 @@ inline std::optional<ConfigReadResult> parseNodeSection(Stream& stream, figcone:
     return {};
 }
 
-inline ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const std::string& nodeName)
+ConfigReadResult parseNode(
+        Stream& stream,
+        figcone::TreeNode& node,
+        const std::string& nodeName)
 {
     while (!stream.atEnd()) {
         auto nextChar = stream.peek().front();
@@ -170,5 +175,3 @@ inline ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const
 }
 
 }
-
-#endif //FIGCONE_SHOAL_NODEPARSER_H
