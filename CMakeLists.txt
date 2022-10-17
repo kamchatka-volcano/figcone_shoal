@@ -11,14 +11,15 @@ SealLake_Import(
         GIT_TAG        cmake_maintenance
 )
 
-SealLake_Import(
-        Microsoft.GSL 4.0.0
+SealLake_Bundle(
+        NAME figcone_gsl
         GIT_REPOSITORY https://github.com/microsoft/GSL
         GIT_TAG        v4.0.0
         TEXT_REPLACEMENTS
             "namespace gsl" "namespace figcone::shoal::gsl"
             "gsl::details" "figcone::shoal::gsl::details"
             "#include <gsl/assert>" "#include \"assert\""
+            GSL figcone_gsl
 )
 
 SealLake_ObjectLibrary(
@@ -30,9 +31,10 @@ SealLake_ObjectLibrary(
             src/paramparser.cpp
             src/stream.cpp
             src/utils.cpp
-        LIBRARIES GSL
+        LIBRARIES Microsoft.figcone_gsl::figcone_gsl
         INTERFACE_LIBRARIES figcone::figcone_tree
         DEPENDENCIES
             figcone_tree 0.11.0
 )
+
 SealLake_OptionalBuildSteps(tests)
