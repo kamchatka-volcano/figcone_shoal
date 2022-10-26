@@ -1,3 +1,5 @@
+[![build & test (clang, gcc, MSVC)](https://github.com/kamchatka-volcano/figcone_shoal/actions/workflows/build_and_test.yml/badge.svg?branch=master)](https://github.com/kamchatka-volcano/figcone_shoal/actions/workflows/build_and_test.yml)
+
 **figcone_shoal** - is a [`shoal`](https://shoal.eelnet.org/) configuration parser for [`figcone`](https://github.com/kamchatka-volcano/figcone) library. 
 
 
