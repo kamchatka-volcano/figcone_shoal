@@ -1,33 +1,30 @@
-#pragma once
+#include "utils.h"
 #include "stream.h"
 #include <figcone_tree/errors.h>
 #include <gsl/util>
-#include <string>
-#include <optional>
-#include <functional>
+#include <algorithm>
 
 namespace figcone::shoal::detail{
-class Stream;
 
-inline bool isSpace(char ch)
+bool isSpace(char ch)
 {
     return std::isspace(static_cast<unsigned char>(ch));
 }
 
-inline bool isBlank(const std::string& str)
+bool isBlank(const std::string& str)
 {
     return std::all_of(str.begin(), str.end(), [](auto ch){return isSpace(ch);});
 }
 
 
-inline void skipLine(Stream& stream)
+void skipLine(Stream& stream)
 {
     while(!stream.atEnd())
         if (stream.read().front() == '\n')
             return;
 }
 
-inline void skipWhitespace(Stream& stream, bool withNewLine = true)
+void skipWhitespace(Stream& stream, bool withNewLine)
 {
     while(!stream.atEnd()) {
         auto nextChar = stream.peek().front();
@@ -41,7 +38,7 @@ inline void skipWhitespace(Stream& stream, bool withNewLine = true)
     }
 }
 
-inline std::string readUntil(Stream& stream, std::function<bool(char)> stopPred)
+std::string readUntil(Stream& stream, std::function<bool(char)> stopPred)
 {
     auto result = std::string{};
     while (!stream.atEnd()) {
@@ -52,19 +49,19 @@ inline std::string readUntil(Stream& stream, std::function<bool(char)> stopPred)
     return result;
 }
 
-inline std::string readUntil(Stream& stream, const std::string& stopChars = {})
+std::string readUntil(Stream& stream, const std::string& stopChars)
 {
     return readUntil(stream,
                      [&stopChars](char ch){return stopChars.find(ch) != std::string::npos;});
 }
 
-inline std::string readWord(Stream& stream, const std::string& stopChars = {})
+std::string readWord(Stream& stream, const std::string& stopChars)
 {
     return readUntil(stream,
                      [&stopChars](char ch) { return isSpace(ch) || stopChars.find(ch) != std::string::npos; });
 }
 
-inline std::optional<std::string> readQuotedString(Stream& stream)
+std::optional<std::string> readQuotedString(Stream& stream)
 {
     if (stream.atEnd())
         return {};

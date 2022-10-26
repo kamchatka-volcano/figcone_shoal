@@ -1,5 +1,6 @@
+#include "paramparser.h"
 #include "utils.h"
-#include <figcone_tree/tree.h>
+#include "stream.h"
 #include <figcone_tree/errors.h>
 #include <gsl/util>
 #include <utility>
@@ -9,7 +10,7 @@ namespace figcone::shoal::detail {
 
 namespace {
 
-inline void skipParamWhitespace(Stream& stream, const std::string& paramName)
+void skipParamWhitespace(Stream& stream, const std::string& paramName)
 {
     skipWhitespace(stream, false);
     if (stream.peek() == "\n")
@@ -17,11 +18,12 @@ inline void skipParamWhitespace(Stream& stream, const std::string& paramName)
                           "' format: parameter's value must be placed on the same line as its name", stream.position()};
 }
 
-inline std::optional<std::string> readSingleParam(Stream& stream,
-                                   const std::string& wordSeparator,
-                                   const std::vector<std::string>& paramListValue,
-                                   const std::string& paramName,
-                                   bool isMultiline)
+std::optional<std::string> readSingleParam(
+        Stream& stream,
+        const std::string& wordSeparator,
+        const std::vector<std::string>& paramListValue,
+        const std::string& paramName,
+        bool isMultiline)
 {
     if (isMultiline)
         stream.skipComments(false);
@@ -46,7 +48,7 @@ inline std::optional<std::string> readSingleParam(Stream& stream,
 }
 
 
-inline figcone::TreeParam makeParam(
+figcone::TreeParam makeParam(
         const std::vector<std::string>& paramValueList,
         const StreamPosition& position,
         bool isList)
@@ -57,10 +59,11 @@ inline figcone::TreeParam makeParam(
         return figcone::TreeParam{paramValueList.at(0), position};
 }
 
-inline figcone::TreeParam readParamOrParamList(Stream& stream,
-                                               const std::string& paramName,
-                                               StreamPosition pos,
-                                               bool isMultiline = false)
+figcone::TreeParam readParamOrParamList(
+        Stream& stream,
+        const std::string& paramName,
+        StreamPosition pos,
+        bool isMultiline = false)
 {
     auto paramValueList = std::vector<std::string>{};
     auto isList = isMultiline;
@@ -89,9 +92,10 @@ inline figcone::TreeParam readParamOrParamList(Stream& stream,
     return makeParam(paramValueList, pos, isList);
 }
 
-inline figcone::TreeParam readParamValue(Stream& stream,
-                                         const std::string& paramName,
-                                         StreamPosition pos)
+figcone::TreeParam readParamValue(
+        Stream& stream,
+        const std::string& paramName,
+        StreamPosition pos)
 {
     skipWhitespace(stream, false);
     if (stream.peek() == "\n" || stream.atEnd())
@@ -107,7 +111,7 @@ inline figcone::TreeParam readParamValue(Stream& stream,
 
 }
 
-inline std::pair<std::string, figcone::TreeParam> parseParam(Stream& stream)
+std::pair<std::string, figcone::TreeParam> parseParam(Stream& stream)
 {
     skipWhitespace(stream);
     auto paramPos = stream.position();

@@ -237,16 +237,16 @@ TEST(TestNodeListParser, NestedCfgList)
        auto& testNodes = nodeData.node("testNodes").asList();
        ASSERT_EQ(testNodes.count(), 2);
        {
-           auto& nodeData = testNodes.node(0).asItem();
-           ASSERT_EQ(nodeData.paramsCount(), 1);
-           ASSERT_EQ(nodeData.hasParam("testInt"), 1);
-           EXPECT_EQ(nodeData.param("testInt").value(), "3");
+           auto& childNodeData = testNodes.node(0).asItem();
+           ASSERT_EQ(childNodeData.paramsCount(), 1);
+           ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
+           EXPECT_EQ(childNodeData.param("testInt").value(), "3");
        }
        {
-           auto& nodeData = testNodes.node(1).asItem();
-           ASSERT_EQ(nodeData.paramsCount(), 1);
-           ASSERT_EQ(nodeData.hasParam("testInt"), 1);
-           EXPECT_EQ(nodeData.param("testInt").value(), "33");
+           auto& childNodeData = testNodes.node(1).asItem();
+           ASSERT_EQ(childNodeData.paramsCount(), 1);
+           ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
+           EXPECT_EQ(childNodeData.param("testInt").value(), "33");
        }
    }
    {
@@ -259,10 +259,10 @@ TEST(TestNodeListParser, NestedCfgList)
        auto& testNodes = nodeData.node("testNodes").asList();
        ASSERT_EQ(testNodes.count(), 1);
        {
-           auto& nodeData = testNodes.node(0).asItem();
-           ASSERT_EQ(nodeData.paramsCount(), 1);
-           ASSERT_EQ(nodeData.hasParam("testInt"), 1);
-           EXPECT_EQ(nodeData.param("testInt").value(), "5");
+           auto& childNodeData = testNodes.node(0).asItem();
+           ASSERT_EQ(childNodeData.paramsCount(), 1);
+           ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
+           EXPECT_EQ(childNodeData.param("testInt").value(), "5");
        }
    }
 }
