@@ -2,6 +2,7 @@
 #include "stream.h"
 #include <figcone_tree/errors.h>
 #include <gsl/util>
+#include <algorithm>
 
 namespace figcone::shoal::detail{
 
