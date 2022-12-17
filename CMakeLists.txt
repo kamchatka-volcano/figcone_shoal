@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.18)
 
 project(figcone_shoal VERSION 0.2.0 DESCRIPTION "shoal parser for figcone library")
 include(GNUInstallDirs)

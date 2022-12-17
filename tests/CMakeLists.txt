@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.20)
 project(test_figcone_shoal)
 
 set(SRC
