@@ -4,8 +4,8 @@
 
 namespace figcone::shoal::detail {
 
-struct ConfigReadResult{
-    enum class NextAction{
+struct ConfigReadResult {
+    enum class NextAction {
         ContinueReading,
         ReturnToParentNode,
         ReturnToNodeByName,
@@ -15,4 +15,4 @@ struct ConfigReadResult{
     StreamPosition returnToNodeStreamPosition;
 };
 
-}
+} //namespace figcone::shoal::detail

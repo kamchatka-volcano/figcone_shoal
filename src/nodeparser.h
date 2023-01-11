@@ -2,7 +2,7 @@
 #include "configreadresult.h"
 #include <optional>
 
-namespace figcone{
+namespace figcone {
 class TreeNode;
 }
 
@@ -21,6 +21,6 @@ std::optional<ConfigReadResult> parseListElementNodeSection(
         const std::string& parentName);
 
 std::optional<ConfigReadResult> parseNodeSection(Stream& stream, figcone::TreeNode& parent);
-ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const std::string& nodeName);\
+ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const std::string& nodeName);
 
-}
+} //namespace figcone::shoal::detail

@@ -4,7 +4,7 @@
 #include <gsl/util>
 #include <algorithm>
 
-namespace figcone::shoal::detail{
+namespace figcone::shoal::detail {
 
 bool isSpace(char ch)
 {
@@ -13,20 +13,25 @@ bool isSpace(char ch)
 
 bool isBlank(const std::string& str)
 {
-    return std::all_of(str.begin(), str.end(), [](auto ch){return isSpace(ch);});
+    return std::all_of(
+            str.begin(),
+            str.end(),
+            [](auto ch)
+            {
+                return isSpace(ch);
+            });
 }
-
 
 void skipLine(Stream& stream)
 {
-    while(!stream.atEnd())
+    while (!stream.atEnd())
         if (stream.read().front() == '\n')
             return;
 }
 
 void skipWhitespace(Stream& stream, bool withNewLine)
 {
-    while(!stream.atEnd()) {
+    while (!stream.atEnd()) {
         auto nextChar = stream.peek().front();
         if (!withNewLine && nextChar == '\n')
             return;
@@ -51,14 +56,22 @@ std::string readUntil(Stream& stream, std::function<bool(char)> stopPred)
 
 std::string readUntil(Stream& stream, const std::string& stopChars)
 {
-    return readUntil(stream,
-                     [&stopChars](char ch){return stopChars.find(ch) != std::string::npos;});
+    return readUntil(
+            stream,
+            [&stopChars](char ch)
+            {
+                return stopChars.find(ch) != std::string::npos;
+            });
 }
 
 std::string readWord(Stream& stream, const std::string& stopChars)
 {
-    return readUntil(stream,
-                     [&stopChars](char ch) { return isSpace(ch) || stopChars.find(ch) != std::string::npos; });
+    return readUntil(
+            stream,
+            [&stopChars](char ch)
+            {
+                return isSpace(ch) || stopChars.find(ch) != std::string::npos;
+            });
 }
 
 std::optional<std::string> readQuotedString(Stream& stream)
@@ -71,7 +84,11 @@ std::optional<std::string> readQuotedString(Stream& stream)
         return {};
 
     stream.skipComments(false);
-    const auto restoreSkipOnExit = gsl::final_action([&stream]{ stream.skipComments(true); });
+    const auto restoreSkipOnExit = gsl::final_action(
+            [&stream]
+            {
+                stream.skipComments(true);
+            });
     auto pos = stream.position();
     stream.skip(1);
 
@@ -85,4 +102,4 @@ std::optional<std::string> readQuotedString(Stream& stream)
     throw ConfigError{"String isn't closed", pos};
 }
 
-}
+} //namespace figcone::shoal::detail

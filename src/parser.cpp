@@ -1,8 +1,8 @@
-#include <figcone_shoal/parser.h>
 #include "nodeparser.h"
 #include "stream.h"
+#include <figcone_shoal/parser.h>
 
-namespace figcone::shoal{
+namespace figcone::shoal {
 
 TreeNode Parser::parse(std::istream& stream)
 {
@@ -12,4 +12,4 @@ TreeNode Parser::parse(std::istream& stream)
     return rootNode;
 }
 
-}
+} //namespace figcone::shoal

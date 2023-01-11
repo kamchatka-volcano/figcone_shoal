@@ -1,10 +1,10 @@
 #include "paramparser.h"
-#include "utils.h"
 #include "stream.h"
+#include "utils.h"
 #include <figcone_tree/errors.h>
 #include <gsl/util>
-#include <utility>
 #include <optional>
+#include <utility>
 
 namespace figcone::shoal::detail {
 
@@ -14,8 +14,9 @@ void skipParamWhitespace(Stream& stream, const std::string& paramName)
 {
     skipWhitespace(stream, false);
     if (stream.peek() == "\n")
-        throw ConfigError{"Wrong param '" + paramName +
-                          "' format: parameter's value must be placed on the same line as its name", stream.position()};
+        throw ConfigError{
+                "Wrong param '" + paramName + "' format: parameter's value must be placed on the same line as its name",
+                stream.position()};
 }
 
 std::optional<std::string> readSingleParam(
@@ -27,10 +28,12 @@ std::optional<std::string> readSingleParam(
 {
     if (isMultiline)
         stream.skipComments(false);
-    const auto restoreSkipOnExit = gsl::final_action([&]{
-        if (isMultiline)
-            stream.skipComments(true);
-    });
+    const auto restoreSkipOnExit = gsl::final_action(
+            [&]
+            {
+                if (isMultiline)
+                    stream.skipComments(true);
+            });
 
     auto quotedParam = readQuotedString(stream);
     if (quotedParam)
@@ -46,7 +49,6 @@ std::optional<std::string> readSingleParam(
         return result;
     }
 }
-
 
 figcone::TreeParam makeParam(
         const std::vector<std::string>& paramValueList,
@@ -80,22 +82,22 @@ figcone::TreeParam readParamOrParamList(
             skipWhitespace(stream, isMultiline);
             if (stream.peek() == endOfList || stream.atEnd())
                 throw ConfigError{"Parameter list '" + paramName + "' element is missing", stream.position()};
-        } else if (stream.peek() == endOfList) {
+        }
+        else if (stream.peek() == endOfList) {
             stream.skip(1);
             return makeParam(paramValueList, pos, isList);
-        } else if (stream.atEnd())
+        }
+        else if (stream.atEnd())
             return makeParam(paramValueList, pos, isList);
         else
-            throw ConfigError{"Wrong param '" + paramName + "' format: there must be only one parameter per line",
-                              stream.position()};
+            throw ConfigError{
+                    "Wrong param '" + paramName + "' format: there must be only one parameter per line",
+                    stream.position()};
     }
     return makeParam(paramValueList, pos, isList);
 }
 
-figcone::TreeParam readParamValue(
-        Stream& stream,
-        const std::string& paramName,
-        StreamPosition pos)
+figcone::TreeParam readParamValue(Stream& stream, const std::string& paramName, StreamPosition pos)
 {
     skipWhitespace(stream, false);
     if (stream.peek() == "\n" || stream.atEnd())
@@ -105,11 +107,12 @@ figcone::TreeParam readParamValue(
         stream.skip(1);
         skipWhitespace(stream);
         return readParamOrParamList(stream, paramName, pos, true);
-    } else
+    }
+    else
         return readParamOrParamList(stream, paramName, pos, false);
 }
 
-}
+} //namespace
 
 std::pair<std::string, figcone::TreeParam> parseParam(Stream& stream)
 {
@@ -129,4 +132,4 @@ std::pair<std::string, figcone::TreeParam> parseParam(Stream& stream)
     return {paramName, readParamValue(stream, paramName, paramPos)};
 }
 
-}
+} //namespace figcone::shoal::detail

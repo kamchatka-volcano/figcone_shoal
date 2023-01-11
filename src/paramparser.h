@@ -6,4 +6,4 @@ class Stream;
 
 std::pair<std::string, figcone::TreeParam> parseParam(Stream& stream);
 
-}
+} //namespace figcone::shoal::detail

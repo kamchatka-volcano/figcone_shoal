@@ -2,8 +2,8 @@
 #include "paramparser.h"
 #include "stream.h"
 #include "utils.h"
-#include <figcone_tree/tree.h>
 #include <figcone_tree/errors.h>
+#include <figcone_tree/tree.h>
 #include <gsl/assert>
 
 namespace figcone::shoal::detail {
@@ -22,9 +22,11 @@ std::string readNodeName(Stream& stream)
             stream.skip(1);
             auto pos = stream.position();
             if (!isBlank(readUntil(stream, "\n")))
-                throw ConfigError{"Wrong config node '" + nodeName +
-                                  "' format: only whitespaces and comments can be placed "
-                                  "on the same line with config node's name.", pos};
+                throw ConfigError{
+                        "Wrong config node '" + nodeName +
+                                "' format: only whitespaces and comments can be placed "
+                                "on the same line with config node's name.",
+                        pos};
             break;
         }
         nodeName += stream.read();
@@ -55,7 +57,6 @@ ConfigReadResult readEndToken(Stream& stream)
     return {ConfigReadResult::NextAction::ReturnToNodeByName, parentConfigNode, pos};
 }
 
-
 ConfigReadResult checkReadResult(
         const ConfigReadResult& readResult,
         const std::string& newNodeName,
@@ -63,7 +64,7 @@ ConfigReadResult checkReadResult(
 {
     if (readResult.nextAction == ConfigReadResult::NextAction::ReturnToRootNode)
         return parentNode.isRoot() ? ConfigReadResult{ConfigReadResult::NextAction::ContinueReading, {}, {}}
-                                 : readResult;
+                                   : readResult;
 
     if (readResult.nextAction == ConfigReadResult::NextAction::ReturnToParentNode && parentNode.isList()) {
         if (parentNode.isRoot())
@@ -75,8 +76,9 @@ ConfigReadResult checkReadResult(
     if (readResult.nextAction == ConfigReadResult::NextAction::ReturnToNodeByName) {
         if (newNodeName != readResult.parentNodeName) {
             if (parentNode.isRoot())
-                throw ConfigError{"Can't close unexisting node '" + readResult.parentNodeName + "'",
-                                  readResult.returnToNodeStreamPosition};
+                throw ConfigError{
+                        "Can't close unexisting node '" + readResult.parentNodeName + "'",
+                        readResult.returnToNodeStreamPosition};
             else
                 return readResult;
         }
@@ -84,7 +86,6 @@ ConfigReadResult checkReadResult(
             return {ConfigReadResult::NextAction::ReturnToParentNode, {}, {}};
     }
     return {ConfigReadResult::NextAction::ContinueReading, {}, {}};
-
 }
 
 std::optional<ConfigReadResult> parseListElementNodeSection(
@@ -98,9 +99,12 @@ std::optional<ConfigReadResult> parseListElementNodeSection(
     stream.skip(3);
     skipWhitespace(stream, false);
     if (stream.peek() != "\n")
-        throw ConfigError{"Wrong config node list '" + parentName + "' format:"
-                          " there can't be anything besides comments and whitespaces "
-                          "on the same line with list separator '###'", stream.position()};
+        throw ConfigError{
+                "Wrong config node list '" + parentName +
+                        "' format:"
+                        " there can't be anything besides comments and whitespaces "
+                        "on the same line with list separator '###'",
+                stream.position()};
 
     auto& nodeList = parent.asList();
     auto& newNode = nodeList.addNode(stream.position());
@@ -115,9 +119,7 @@ std::optional<ConfigReadResult> parseListElementNodeSection(
     return {};
 }
 
-std::optional<ConfigReadResult> parseNodeSection(
-        Stream& stream,
-        figcone::TreeNode& parent)
+std::optional<ConfigReadResult> parseNodeSection(Stream& stream, figcone::TreeNode& parent)
 {
     auto pos = stream.position();
     auto newNodeName = readNodeName(stream);
@@ -127,7 +129,8 @@ std::optional<ConfigReadResult> parseNodeSection(
 
     if (parent.asItem().hasNode(newNodeName))
         throw ConfigError{"Config node '" + newNodeName + "' already exist", pos};
-    auto& newNode = [&]() -> decltype(auto){
+    auto& newNode = [&]() -> decltype(auto)
+    {
         if (stream.peek(3) == "###")
             return parent.asItem().addNodeList(newNodeName, pos);
         else
@@ -144,10 +147,7 @@ std::optional<ConfigReadResult> parseNodeSection(
     return {};
 }
 
-ConfigReadResult parseNode(
-        Stream& stream,
-        figcone::TreeNode& node,
-        const std::string& nodeName)
+ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const std::string& nodeName)
 {
     while (!stream.atEnd()) {
         auto nextChar = stream.peek().front();
@@ -174,4 +174,4 @@ ConfigReadResult parseNode(
     return {ConfigReadResult::NextAction::ReturnToRootNode, {}, {}};
 }
 
-}
+} //namespace figcone::shoal::detail

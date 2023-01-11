@@ -282,8 +282,10 @@ TEST(TestNodeParser, MultiLevelClose)
 
 TEST(TestNodeParser, CloseByUnknownNameError)
 {
-    assert_exception<figcone::ConfigError>([&] {
-        parse(R"(
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parse(R"(
             foo = 5
             bar = test
             #c:
@@ -296,83 +298,107 @@ TEST(TestNodeParser, CloseByUnknownNameError)
             #b:
               testInt = 9
         )");
-    }, [](const figcone::ConfigError& error) {
-        EXPECT_EQ(std::string{error.what()}, "[line:10, column:14] Can't close unexisting node 'test'");
-    });
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(std::string{error.what()}, "[line:10, column:14] Can't close unexisting node 'test'");
+            });
 }
 
 TEST(TestNodeParser, ReturnToRootClosingTokenError)
 {
-    assert_exception<figcone::ConfigError>([&] {
-        parse(R"(
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parse(R"(
             foo = 5
             bar = test
             #a:
               testInt = 10
             ---a
         )");
-    }, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "[line:6, column:16] Invalid closing token '---a'");
-    });
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(std::string{error.what()}, "[line:6, column:16] Invalid closing token '---a'");
+            });
 }
 
 TEST(TestNodeParser, ReturnToParentClosingTokenError)
 {
-    assert_exception<figcone::ConfigError>([&] {
-        parse(R"(
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parse(R"(
             foo = 5
             bar = test
             #a:
               testInt = 10
             -a
         )");
-    }, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "[line:6, column:14] Invalid closing token '-a'");
-    });
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(std::string{error.what()}, "[line:6, column:14] Invalid closing token '-a'");
+            });
 }
 
 TEST(TestNodeParser, InvalidNodeNameLineError)
 {
-    assert_exception<figcone::ConfigError>([&] {
-        parse(R"(
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parse(R"(
             foo = 5
             bar = test
             #a:  test
               testInt = 10
         )");
-    }, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "[line:4, column:16] Wrong config node 'a' format: "
-                                             "only whitespaces and comments can be placed on the same line with config node's name.");
-    });
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(
+                        std::string{error.what()},
+                        "[line:4, column:16] Wrong config node 'a' format: "
+                        "only whitespaces and comments can be placed on the same line with config node's name.");
+            });
 }
 
 TEST(TestNodeParser, BlankNodeNameError)
 {
-    assert_exception<figcone::ConfigError>([&] {
-        parse(R"(
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parse(R"(
             foo = 5
             bar = test
             # :
               testInt = 10
         )");
-    }, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "[line:4, column:13] Config node name can't be blank");
-    });
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(std::string{error.what()}, "[line:4, column:13] Config node name can't be blank");
+            });
 }
 
 TEST(TestNodeParser, MultilineNodeNameError)
 {
-    assert_exception<figcone::ConfigError>([&] {
-        parse(R"(
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parse(R"(
             foo = 5
             bar = test
             #
             b:
               testInt = 10
         )");
-    }, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "[line:4, column:14] Config node can't have a multiline name");
-    });
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(std::string{error.what()}, "[line:4, column:14] Config node can't have a multiline name");
+            });
 }
 
-}
+} //namespace test_nodeparser

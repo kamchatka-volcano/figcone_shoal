@@ -1,9 +1,9 @@
 #pragma once
-#include <string>
-#include <optional>
 #include <functional>
+#include <optional>
+#include <string>
 
-namespace figcone::shoal::detail{
+namespace figcone::shoal::detail {
 class Stream;
 
 bool isSpace(char ch);
@@ -15,4 +15,4 @@ std::string readUntil(Stream& stream, const std::string& stopChars = {});
 std::string readWord(Stream& stream, const std::string& stopChars = {});
 std::optional<std::string> readQuotedString(Stream& stream);
 
-}
+} //namespace figcone::shoal::detail
