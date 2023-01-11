@@ -199,7 +199,7 @@ TEST(TestNodeListParser, NestedClosedByName)
 
 TEST(TestNodeListParser, NestedCfgList)
 {
-   auto result = parse(R"(
+    auto result = parse(R"(
         #testList:
         ###
             testStr = Hello
@@ -219,52 +219,52 @@ TEST(TestNodeListParser, NestedCfgList)
         testStr = Hello
     )");
 
-   auto& tree = result.asItem();
-   ASSERT_EQ(tree.paramsCount(), 1);
-   ASSERT_EQ(tree.hasParam("testStr"), 1);
-   EXPECT_EQ(tree.param("testStr").value(), "Hello");
-   ASSERT_EQ(tree.nodesCount(), 1);
-   ASSERT_EQ(tree.hasNode("testList"), 1);
-   auto& testList = tree.node("testList").asList();
-   ASSERT_EQ(testList.count(), 2);
-   {
-       auto& nodeData = testList.node(0).asItem();
-       ASSERT_EQ(nodeData.paramsCount(), 1);
-       ASSERT_EQ(nodeData.hasParam("testStr"), 1);
-       EXPECT_EQ(nodeData.param("testStr").value(), "Hello");
-       ASSERT_EQ(nodeData.nodesCount(), 1);
-       ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
-       auto& testNodes = nodeData.node("testNodes").asList();
-       ASSERT_EQ(testNodes.count(), 2);
-       {
-           auto& childNodeData = testNodes.node(0).asItem();
-           ASSERT_EQ(childNodeData.paramsCount(), 1);
-           ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
-           EXPECT_EQ(childNodeData.param("testInt").value(), "3");
-       }
-       {
-           auto& childNodeData = testNodes.node(1).asItem();
-           ASSERT_EQ(childNodeData.paramsCount(), 1);
-           ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
-           EXPECT_EQ(childNodeData.param("testInt").value(), "33");
-       }
-   }
-   {
-       auto& nodeData = testList.node(1).asItem();
-       ASSERT_EQ(nodeData.paramsCount(), 1);
-       ASSERT_EQ(nodeData.hasParam("testStr"), 1);
-       EXPECT_EQ(nodeData.param("testStr").value(), "World");
-       ASSERT_EQ(nodeData.nodesCount(), 1);
-       ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
-       auto& testNodes = nodeData.node("testNodes").asList();
-       ASSERT_EQ(testNodes.count(), 1);
-       {
-           auto& childNodeData = testNodes.node(0).asItem();
-           ASSERT_EQ(childNodeData.paramsCount(), 1);
-           ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
-           EXPECT_EQ(childNodeData.param("testInt").value(), "5");
-       }
-   }
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_EQ(tree.hasParam("testStr"), 1);
+    EXPECT_EQ(tree.param("testStr").value(), "Hello");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("testList"), 1);
+    auto& testList = tree.node("testList").asList();
+    ASSERT_EQ(testList.count(), 2);
+    {
+        auto& nodeData = testList.node(0).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_EQ(nodeData.hasParam("testStr"), 1);
+        EXPECT_EQ(nodeData.param("testStr").value(), "Hello");
+        ASSERT_EQ(nodeData.nodesCount(), 1);
+        ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
+        auto& testNodes = nodeData.node("testNodes").asList();
+        ASSERT_EQ(testNodes.count(), 2);
+        {
+            auto& childNodeData = testNodes.node(0).asItem();
+            ASSERT_EQ(childNodeData.paramsCount(), 1);
+            ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
+            EXPECT_EQ(childNodeData.param("testInt").value(), "3");
+        }
+        {
+            auto& childNodeData = testNodes.node(1).asItem();
+            ASSERT_EQ(childNodeData.paramsCount(), 1);
+            ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
+            EXPECT_EQ(childNodeData.param("testInt").value(), "33");
+        }
+    }
+    {
+        auto& nodeData = testList.node(1).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_EQ(nodeData.hasParam("testStr"), 1);
+        EXPECT_EQ(nodeData.param("testStr").value(), "World");
+        ASSERT_EQ(nodeData.nodesCount(), 1);
+        ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
+        auto& testNodes = nodeData.node("testNodes").asList();
+        ASSERT_EQ(testNodes.count(), 1);
+        {
+            auto& childNodeData = testNodes.node(0).asItem();
+            ASSERT_EQ(childNodeData.paramsCount(), 1);
+            ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
+            EXPECT_EQ(childNodeData.param("testInt").value(), "5");
+        }
+    }
 }
 
 TEST(TestNodeListParser, NestedCfg2List)
@@ -317,11 +317,12 @@ TEST(TestNodeListParser, NestedCfg2List)
     }
 }
 
-
 TEST(TestNodeListParser, InvalidListSeparatorLineError)
 {
-    assert_exception<figcone::ConfigError>([&]{
-    parse(R"(
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parse(R"(
         #testNodes:
         ### error
             testInt = 3
@@ -329,17 +330,24 @@ TEST(TestNodeListParser, InvalidListSeparatorLineError)
             testInt = 2
         -
         testStr = Hello
-    )");}, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "[line:3, column:13] Wrong config node list 'testNodes' format: "
-                                             "there can't be anything besides comments and whitespaces "
-                                             "on the same line with list separator '###'");
-    });
+    )");
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(
+                        std::string{error.what()},
+                        "[line:3, column:13] Wrong config node list 'testNodes' format: "
+                        "there can't be anything besides comments and whitespaces "
+                        "on the same line with list separator '###'");
+            });
 }
 
 TEST(TestNodeListParser, InvalidListSeparatorError)
 {
-    assert_exception<figcone::ConfigError>([&]{
-        parse(R"(
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parse(R"(
         #testNodes:
         ##error
             testInt = 3
@@ -347,15 +355,20 @@ TEST(TestNodeListParser, InvalidListSeparatorError)
             testInt = 2
         -
         testStr = Hello
-    )");}, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "[line:3, column:16] Config node can't have a multiline name");
-    });
+    )");
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(std::string{error.what()}, "[line:3, column:16] Config node can't have a multiline name");
+            });
 }
 
 TEST(TestNodeListParser, InvalidListError)
 {
-    assert_exception<figcone::ConfigError>([&]{
-        parse(R"(
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parse(R"(
         #testNodes:
         error
         ###
@@ -364,9 +377,15 @@ TEST(TestNodeListParser, InvalidListError)
             testInt = 2
         -
         testStr = Hello
-    )");}, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "[line:3, column:14] Wrong param 'error' format: parameter's value must be placed on the same line as its name");
-    });
+    )");
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(
+                        std::string{error.what()},
+                        "[line:3, column:14] Wrong param 'error' format: parameter's value must be placed on the same "
+                        "line as its name");
+            });
 }
 
-}
+} //namespace test_nodelistparser

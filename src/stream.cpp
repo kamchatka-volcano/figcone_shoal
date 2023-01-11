@@ -1,9 +1,10 @@
 #include "stream.h"
 
-namespace figcone::shoal::detail{
+namespace figcone::shoal::detail {
 
 Stream::Stream(std::istream& stream, const StreamPosition& startPosition)
-        : stream_(stream), startPosition_(startPosition)
+    : stream_(stream)
+    , startPosition_(startPosition)
 {
 }
 
@@ -31,7 +32,8 @@ std::string Stream::read(int size)
         if (ch == '\n') {
             (*position_.line)++;
             (*position_.column) = 0;
-        } else if (ch == '\t')
+        }
+        else if (ch == '\t')
             (*position_.column) += 4;
         else
             (*position_.column)++;
@@ -69,8 +71,7 @@ bool Stream::atEnd()
 
 StreamPosition Stream::position() const
 {
-    return {*startPosition_.line + *position_.line,
-            *startPosition_.column + *position_.column};
+    return {*startPosition_.line + *position_.line, *startPosition_.column + *position_.column};
 }
 
 void Stream::skipLine()
@@ -86,4 +87,4 @@ void Stream::skipLine()
     }
 }
 
-}
+} //namespace figcone::shoal::detail

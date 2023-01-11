@@ -1,11 +1,11 @@
 #pragma once
 #include <figcone_tree/streamposition.h>
-#include <string>
 #include <istream>
+#include <string>
 
-namespace figcone::shoal::detail{
+namespace figcone::shoal::detail {
 
-class Stream{
+class Stream {
 public:
     explicit Stream(std::istream& stream, const StreamPosition& startPosition = StreamPosition{1, 1});
     Stream(Stream&&) = default;
@@ -19,9 +19,9 @@ public:
     bool atEnd();
     StreamPosition position() const;
 
-
 private:
     void skipLine();
+
 private:
     std::istream& stream_;
     StreamPosition position_ = {0, 0};
@@ -29,5 +29,4 @@ private:
     bool skipComments_ = true;
 };
 
-}
-
+} //namespace figcone::shoal::detail
