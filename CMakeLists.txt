@@ -12,7 +12,7 @@ SealLake_Import(
 )
 
 SealLake_Bundle(
-        NAME figcone_sfun
+        NAME figcone_shoal_sfun
         GIT_REPOSITORY https://github.com/kamchatka-volcano/sfun.git
         GIT_TAG        v3.1.0
         TEXT_REPLACEMENTS
@@ -21,14 +21,14 @@ SealLake_Bundle(
 )
 
 SealLake_Bundle(
-        NAME figcone_gsl
+        NAME figcone_shoal_gsl
         GIT_REPOSITORY https://github.com/microsoft/GSL
         GIT_TAG        v4.0.0
         TEXT_REPLACEMENTS
             "namespace gsl" "namespace figcone::shoal::gsl"
             "gsl::details" "figcone::shoal::gsl::details"
             "#include <gsl/assert>" "#include \"assert\""
-            GSL figcone_gsl
+            GSL figcone_shoal_gsl
             figcone_gsl.natvis GSL.natvis
 )
 
@@ -41,7 +41,7 @@ SealLake_ObjectLibrary(
             src/paramparser.cpp
             src/stream.cpp
             src/utils.cpp
-        LIBRARIES Microsoft.figcone_gsl::figcone_gsl figcone_sfun::figcone_sfun
+        LIBRARIES Microsoft.figcone_shoal_gsl::figcone_shoal_gsl figcone_shoal_sfun::figcone_shoal_sfun
         INTERFACE_LIBRARIES figcone::figcone_tree
         DEPENDENCIES
             figcone_tree 1.0.0
