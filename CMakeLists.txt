@@ -29,7 +29,7 @@ SealLake_Bundle(
             "gsl::details" "figcone::shoal::gsl::details"
             "#include <gsl/assert>" "#include \"assert\""
             GSL figcone_shoal_gsl
-            figcone_gsl.natvis GSL.natvis
+            figcone_shoal_gsl.natvis GSL.natvis
 )
 
 SealLake_ObjectLibrary(
