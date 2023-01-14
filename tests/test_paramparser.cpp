@@ -70,6 +70,14 @@ TEST(TestParamParser, Multiword3)
     EXPECT_EQ(param.value(), "hello\n world");
 }
 
+TEST(TestParamParser, Multiword4)
+{
+    auto [paramName, param] = parseParam("test= hello world  ");
+    ASSERT_TRUE(param.isItem());
+    EXPECT_EQ(paramName, "test");
+    EXPECT_EQ(param.value(), "hello world");
+}
+
 TEST(TestParamParser, ParamWithoutAssignmentError)
 {
     assert_exception<figcone::ConfigError>(

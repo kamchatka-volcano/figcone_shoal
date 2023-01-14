@@ -2,6 +2,7 @@
 #include "stream.h"
 #include "utils.h"
 #include <figcone_tree/errors.h>
+#include <sfun/string_utils.h>
 #include <gsl/util>
 #include <optional>
 #include <utility>
@@ -39,7 +40,7 @@ std::optional<std::string> readSingleParam(
     if (quotedParam)
         return *quotedParam;
     else {
-        auto result = readWord(stream, wordSeparator);
+        auto result = sfun::trim(readUntil(stream, wordSeparator + "\n"));
         if (result.empty()) {
             if (stream.peek() == "," || (paramListValue.empty() && !isMultiline))
                 throw ConfigError{"Parameter list '" + paramName + "' element is missing", stream.position()};

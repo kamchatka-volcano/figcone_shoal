@@ -170,6 +170,15 @@ TEST(TestParamListParser, BasicString)
     EXPECT_EQ(param.valueList(), (std::vector<std::string>{"Hello,\n world", "Foo"}));
 }
 
+TEST(TestParamListParser, BasicString2)
+{
+    auto [paramName, param] = parseParam("testStrList = Hello world , Foo ");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testStrList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"Hello world", "Foo"}));
+}
+
 TEST(TestParamListParser, Multiline)
 {
     auto [paramName, param] = parseParam("testIntList = [1,2,3]");
@@ -186,6 +195,15 @@ TEST(TestParamListParser, MultilineWithString)
     ASSERT_TRUE(param.isList());
     EXPECT_EQ(paramName, "testStrList");
     EXPECT_EQ(param.valueList(), (std::vector<std::string>{"Hello", "world", " "}));
+}
+
+TEST(TestParamListParser, MultilineWithString2)
+{
+    auto [paramName, param] = parseParam("testStrList = [Hello world, ' ']");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testStrList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"Hello world", " "}));
 }
 
 TEST(TestParamListParser, MultilineWithStringAltWhitespace)
