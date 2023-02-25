@@ -1,25 +1,15 @@
 #include "utils.h"
 #include "stream.h"
 #include <figcone_tree/errors.h>
+#include <sfun/string_utils.h>
 #include <gsl/util>
 #include <algorithm>
 
 namespace figcone::shoal::detail {
 
-bool isSpace(char ch)
-{
-    return std::isspace(static_cast<unsigned char>(ch));
-}
-
 bool isBlank(const std::string& str)
 {
-    return std::all_of(
-            str.begin(),
-            str.end(),
-            [](auto ch)
-            {
-                return isSpace(ch);
-            });
+    return std::all_of(str.begin(), str.end(), sfun::isspace);
 }
 
 void skipLine(Stream& stream)
@@ -36,7 +26,7 @@ void skipWhitespace(Stream& stream, bool withNewLine)
         if (!withNewLine && nextChar == '\n')
             return;
 
-        if (isSpace(nextChar))
+        if (sfun::isspace(nextChar))
             stream.skip(1);
         else
             return;
@@ -70,7 +60,7 @@ std::string readWord(Stream& stream, const std::string& stopChars)
             stream,
             [&stopChars](char ch)
             {
-                return isSpace(ch) || stopChars.find(ch) != std::string::npos;
+                return sfun::isspace(ch) || stopChars.find(ch) != std::string::npos;
             });
 }
 
@@ -80,7 +70,7 @@ std::optional<std::string> readQuotedString(Stream& stream)
         return {};
 
     auto quotationMark = stream.peek().front();
-    if (quotationMark != '\'' && quotationMark != '"')
+    if (quotationMark != '\'' && quotationMark != '"' && quotationMark != '`')
         return {};
 
     stream.skipComments(false);
@@ -91,6 +81,9 @@ std::optional<std::string> readQuotedString(Stream& stream)
             });
     auto pos = stream.position();
     stream.skip(1);
+
+    if (stream.peek() == "\n")
+        stream.skip(1);
 
     auto result = std::string{};
     while (!stream.atEnd()) {

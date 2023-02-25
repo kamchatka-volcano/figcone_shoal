@@ -38,6 +38,23 @@ TEST(TestParamParser, StringParam)
     EXPECT_EQ(param.value(), "hello world.txt");
 }
 
+TEST(TestParamParser, StringParam2)
+{
+    auto [paramName, param] = parseParam("test=\"'hello world.txt'\"");
+    ASSERT_TRUE(param.isItem());
+    EXPECT_EQ(paramName, "test");
+    EXPECT_EQ(param.value(), "'hello world.txt'");
+}
+
+TEST(TestParamParser, StringParam3)
+{
+    auto [paramName, param] = parseParam("test=`'hello' \"world\"`");
+    ASSERT_TRUE(param.isItem());
+    EXPECT_EQ(paramName, "test");
+    EXPECT_EQ(param.value(), "'hello' \"world\"");
+}
+
+
 TEST(TestParamParser, EmptyStringParam)
 {
     auto [paramName, param] = parseParam("test=''");
@@ -76,6 +93,14 @@ TEST(TestParamParser, Multiword4)
     ASSERT_TRUE(param.isItem());
     EXPECT_EQ(paramName, "test");
     EXPECT_EQ(param.value(), "hello world");
+}
+
+TEST(TestParamParser, Multiword5)
+{
+    auto [paramName, param] = parseParam("test=\"\nhello world \"  ");
+    ASSERT_TRUE(param.isItem());
+    EXPECT_EQ(paramName, "test");
+    EXPECT_EQ(param.value(), "hello world ");
 }
 
 TEST(TestParamParser, ParamWithoutAssignmentError)

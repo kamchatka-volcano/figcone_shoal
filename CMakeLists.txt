@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(figcone_shoal VERSION 0.2.3 DESCRIPTION "shoal parser for figcone library")
+project(figcone_shoal VERSION 0.3.0 DESCRIPTION "shoal parser for figcone library")
 include(GNUInstallDirs)
 include(external/seal_lake)
 

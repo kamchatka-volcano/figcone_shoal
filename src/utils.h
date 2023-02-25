@@ -6,7 +6,6 @@
 namespace figcone::shoal::detail {
 class Stream;
 
-bool isSpace(char ch);
 bool isBlank(const std::string& str);
 void skipLine(Stream& stream);
 void skipWhitespace(Stream& stream, bool withNewLine = true);
