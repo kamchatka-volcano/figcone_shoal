@@ -44,6 +44,73 @@ TEST(TestNodeListParser, Basic)
     }
 }
 
+TEST(TestNodeListParser, BasicCR)
+{
+    auto result = parse(
+            "testStr = Hello\r"
+            "#testNodes:\r"
+            "###\r"
+            "    testInt = 3\r"
+            "###\r"
+            "    testInt = 2\r"
+    );
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_EQ(tree.hasParam("testStr"), 1);
+    EXPECT_EQ(tree.param("testStr").value(), "Hello");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("testNodes"), 1);
+    auto& testNodes = tree.node("testNodes").asList();
+    ASSERT_EQ(testNodes.count(), 2);
+    {
+        auto& nodeData = testNodes.node(0).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_EQ(nodeData.hasParam("testInt"), 1);
+        EXPECT_EQ(nodeData.param("testInt").value(), "3");
+    }
+    {
+        auto& nodeData = testNodes.node(1).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_EQ(nodeData.hasParam("testInt"), 1);
+        EXPECT_EQ(nodeData.param("testInt").value(), "2");
+    }
+}
+
+TEST(TestNodeListParser, BasicCRLF)
+{
+    auto result = parse(
+        "testStr = Hello\r\n"
+        "#testNodes:\r\n"
+        "###\r\n"
+        "    testInt = 3\r\n"
+        "###\r\n"
+        "    testInt = 2\r\n"
+    );
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_EQ(tree.hasParam("testStr"), 1);
+    EXPECT_EQ(tree.param("testStr").value(), "Hello");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("testNodes"), 1);
+    auto& testNodes = tree.node("testNodes").asList();
+    ASSERT_EQ(testNodes.count(), 2);
+    {
+        auto& nodeData = testNodes.node(0).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_EQ(nodeData.hasParam("testInt"), 1);
+        EXPECT_EQ(nodeData.param("testInt").value(), "3");
+    }
+    {
+        auto& nodeData = testNodes.node(1).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_EQ(nodeData.hasParam("testInt"), 1);
+        EXPECT_EQ(nodeData.param("testInt").value(), "2");
+    }
+}
+
+
 TEST(TestNodeListParser, BasicClosedManually)
 {
     auto result = parse(R"(

@@ -13,6 +13,7 @@ public:
     Stream& operator=(const Stream&) = delete;
 
     void skip(int size);
+    void skipLineSeparator();
     void skipComments(bool state);
     std::string read(int size = 1);
     std::string peek(int size = 1);

@@ -83,7 +83,7 @@ std::optional<std::string> readQuotedString(Stream& stream)
     stream.skip(1);
 
     if (stream.peek() == "\n")
-        stream.skip(1);
+        stream.skipLineSeparator();
 
     auto result = std::string{};
     while (!stream.atEnd()) {

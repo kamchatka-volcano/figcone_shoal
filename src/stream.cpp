@@ -13,6 +13,25 @@ void Stream::skip(int size)
     read(size);
 }
 
+void Stream::skipLineSeparator()
+{
+    auto ch = char{};
+    auto pos = stream_.tellg();
+    if (!stream_.get(ch))
+        return;
+    if (ch == '\n')
+        return;
+    else if (ch == '\r') {
+        pos = stream_.tellg();
+        if (!stream_.get(ch))
+            return;
+        if (ch != '\n')
+            stream_.seekg(pos);
+    }
+    else
+        stream_.seekg(pos);
+}
+
 void Stream::skipComments(bool state)
 {
     skipComments_ = state;
@@ -29,9 +48,14 @@ std::string Stream::read(int size)
             skipLine();
             continue;
         }
-        if (ch == '\n') {
+        if (ch == '\r' && peek() == "\n") {
+            i--;
+            continue;
+        }
+        else if (ch == '\r' || ch == '\n') {
             (*position_.line)++;
             (*position_.column) = 0;
+            ch = '\n';
         }
         else if (ch == '\t')
             (*position_.column) += 4;
@@ -56,9 +80,20 @@ std::string Stream::peek(int size)
         if (skipComments_ && ch == ';') {
             skipLine();
             i--;
-            continue;
         }
-        result.push_back(ch);
+        else if (ch == '\r') {
+            auto crPos = stream_.tellg();
+            if (stream_.get(ch)) {
+                if (ch != '\n')
+                    stream_.seekg(crPos);
+            }
+            else
+                stream_.clear();
+
+            result.push_back('\n');
+        }
+        else
+            result.push_back(ch);
     }
     stream_.seekg(pos);
     return result;
@@ -79,7 +114,7 @@ void Stream::skipLine()
     auto ch = char{};
     auto prevPos = stream_.tellg();
     while (stream_.get(ch)) {
-        if (ch == '\n') {
+        if (ch == '\r' || ch == '\n') {
             stream_.seekg(prevPos);
             break;
         }

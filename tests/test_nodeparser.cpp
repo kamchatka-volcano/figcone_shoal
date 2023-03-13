@@ -35,6 +35,51 @@ TEST(TestNodeParser, SingleNodeSingleLevel)
     EXPECT_EQ(aNode.param("testInt").value(), "10");
 }
 
+TEST(TestNodeParser, SingleNodeSingleLevelCR)
+{
+    auto result = parse(
+            "foo = 5\r"
+            "bar = test\r"
+            "#a:\r"
+            "  testInt = 10\r"
+    );
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 2);
+    ASSERT_EQ(tree.hasParam("foo"), 1);
+    ASSERT_EQ(tree.hasParam("bar"), 1);
+    EXPECT_EQ(tree.param("foo").value(), "5");
+    EXPECT_EQ(tree.param("bar").value(), "test");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("a"), 1);
+    auto& aNode = tree.node("a").asItem();
+    ASSERT_EQ(aNode.paramsCount(), 1);
+    EXPECT_EQ(aNode.param("testInt").value(), "10");
+}
+
+
+TEST(TestNodeParser, SingleNodeSingleLevelCRLF)
+{
+    auto result = parse(
+        "foo = 5\r\n"
+        "bar = test\r\n"
+        "#a:\r\n"
+        "  testInt = 10\r\n"
+    );
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 2);
+    ASSERT_EQ(tree.hasParam("foo"), 1);
+    ASSERT_EQ(tree.hasParam("bar"), 1);
+    EXPECT_EQ(tree.param("foo").value(), "5");
+    EXPECT_EQ(tree.param("bar").value(), "test");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("a"), 1);
+    auto& aNode = tree.node("a").asItem();
+    ASSERT_EQ(aNode.paramsCount(), 1);
+    EXPECT_EQ(aNode.param("testInt").value(), "10");
+}
+
 TEST(TestNodeParser, MultiNodeSingleLevel)
 {
 

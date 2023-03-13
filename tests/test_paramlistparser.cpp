@@ -93,6 +93,32 @@ TEST(TestParamListParser, EmptyLastElementAltWhitespaceError)
             });
 }
 
+TEST(TestParamListParser, EmptyLastElementAltWhitespaceErrorCR)
+{
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parseParam("testIntList =1,2, \r ");
+            },
+            [](const figcone::ConfigError& e)
+            {
+                ASSERT_EQ(std::string{e.what()}, "[line:1, column:19] Parameter list 'testIntList' element is missing");
+            });
+}
+
+TEST(TestParamListParser, EmptyLastElementAltWhitespaceErrorCRLF)
+{
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parseParam("testIntList =1,2, \r\n ");
+            },
+            [](const figcone::ConfigError& e)
+            {
+                ASSERT_EQ(std::string{e.what()}, "[line:1, column:19] Parameter list 'testIntList' element is missing");
+            });
+}
+
 TEST(TestParamListParser, EmptyError)
 {
     assert_exception<figcone::ConfigError>(
@@ -135,6 +161,38 @@ TEST(TestParamListParser, EmptyAltWhitespace2Error)
             });
 }
 
+TEST(TestParamListParser, EmptyAltWhitespace2ErrorCR)
+{
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parseParam("testIntList = \r  ");
+            },
+            [](const figcone::ConfigError& e)
+            {
+                ASSERT_EQ(
+                        std::string{e.what()},
+                        "[line:1, column:15] Wrong param 'testIntList' format: parameter's value must be placed on the "
+                        "same line as its name");
+            });
+}
+
+TEST(TestParamListParser, EmptyAltWhitespace2ErrorCRLF)
+{
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parseParam("testIntList = \r\n  ");
+            },
+            [](const figcone::ConfigError& e)
+            {
+                ASSERT_EQ(
+                        std::string{e.what()},
+                        "[line:1, column:15] Wrong param 'testIntList' format: parameter's value must be placed on the "
+                        "same line as its name");
+            });
+}
+
 TEST(TestParamListParser, EmptyWithSeparatorError)
 {
     assert_exception<figcone::ConfigError>(
@@ -164,6 +222,24 @@ TEST(TestParamListParser, EmptyWithSeparatorAltWhitespaceError)
 TEST(TestParamListParser, BasicString)
 {
     auto [paramName, param] = parseParam("testStrList = 'Hello,\n world', Foo ");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testStrList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"Hello,\n world", "Foo"}));
+}
+
+TEST(TestParamListParser, BasicStringCR)
+{
+    auto [paramName, param] = parseParam("testStrList = 'Hello,\r world', Foo ");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testStrList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"Hello,\n world", "Foo"}));
+}
+
+TEST(TestParamListParser, BasicStringCRLF)
+{
+    auto [paramName, param] = parseParam("testStrList = 'Hello,\r\n world', Foo ");
 
     ASSERT_TRUE(param.isList());
     EXPECT_EQ(paramName, "testStrList");
@@ -215,6 +291,24 @@ TEST(TestParamListParser, MultilineWithStringAltWhitespace)
     EXPECT_EQ(param.valueList(), (std::vector<std::string>{"Hello", "world", ""}));
 }
 
+TEST(TestParamListParser, MultilineWithStringAltWhitespaceCR)
+{
+    auto [paramName, param] = parseParam("testStrList = [ \"Hello\"\r,  world,\r ''\r]");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testStrList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"Hello", "world", ""}));
+}
+
+TEST(TestParamListParser, MultilineWithStringAltWhitespaceCRLF)
+{
+    auto [paramName, param] = parseParam("testStrList = [ \"Hello\"\r\n,  world,\r\n ''\r\n]");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testStrList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"Hello", "world", ""}));
+}
+
 TEST(TestParamListParser, MultilineAltWhitespace)
 {
     auto [paramName, param] = parseParam("testIntList = [ 1, 2, 3 ]");
@@ -233,9 +327,46 @@ TEST(TestParamListParser, MultilineAltWhitespace2)
     EXPECT_EQ(param.valueList(), (std::vector<std::string>{"1", "2", "3"}));
 }
 
+TEST(TestParamListParser, MultilineAltWhitespace2CR)
+{
+    auto [paramName, param] = parseParam("testIntList = [1,\r 2\r, 3 ]");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testIntList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"1", "2", "3"}));
+}
+
+TEST(TestParamListParser, MultilineAltWhitespace2CRLF)
+{
+    auto [paramName, param] = parseParam("testIntList = [1,\r\n 2\r\n, 3 ]");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testIntList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"1", "2", "3"}));
+}
+
+
 TEST(TestParamListParser, MultilineAltWhitespace3)
 {
     auto [paramName, param] = parseParam("testIntList = [\n1\n,2,\n 3]");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testIntList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"1", "2", "3"}));
+}
+
+TEST(TestParamListParser, MultilineAltWhitespace3CR)
+{
+    auto [paramName, param] = parseParam("testIntList = [\r1\r,2,\r 3]");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testIntList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{"1", "2", "3"}));
+}
+
+TEST(TestParamListParser, MultilineAltWhitespace3CRLF)
+{
+    auto [paramName, param] = parseParam("testIntList = [\r\n1\r\n,2,\r\n 3]");
 
     ASSERT_TRUE(param.isList());
     EXPECT_EQ(paramName, "testIntList");
@@ -316,6 +447,25 @@ TEST(TestParamListParser, MultiLineEmptyAltWhitespace2)
     EXPECT_EQ(param.valueList(), (std::vector<std::string>{}));
 }
 
+TEST(TestParamListParser, MultiLineEmptyAltWhitespace2CR)
+{
+    auto [paramName, param] = parseParam("testIntList = [ \r  ] ");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testIntList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{}));
+}
+
+TEST(TestParamListParser, MultiLineEmptyAltWhitespace2CRLF)
+{
+    auto [paramName, param] = parseParam("testIntList = [ \r\n  ] ");
+
+    ASSERT_TRUE(param.isList());
+    EXPECT_EQ(paramName, "testIntList");
+    EXPECT_EQ(param.valueList(), (std::vector<std::string>{}));
+}
+
+
 TEST(TestParamListParser, MultiLineEmptyWithSeparatorError)
 {
     assert_exception<figcone::ConfigError>(
@@ -354,5 +504,32 @@ TEST(TestParamListParser, MultiLineEmptyWithSeparatorAltWhitespace2Error)
                 ASSERT_EQ(std::string{e.what()}, "[line:2, column:1] Parameter list 'testIntList' element is missing");
             });
 }
+
+TEST(TestParamListParser, MultiLineEmptyWithSeparatorAltWhitespace2ErrorCR)
+{
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parseParam("testIntList =[  \r, \r] ");
+            },
+            [](const figcone::ConfigError& e)
+            {
+                ASSERT_EQ(std::string{e.what()}, "[line:2, column:1] Parameter list 'testIntList' element is missing");
+            });
+}
+
+TEST(TestParamListParser, MultiLineEmptyWithSeparatorAltWhitespace2ErrorCRLF)
+{
+    assert_exception<figcone::ConfigError>(
+            [&]
+            {
+                parseParam("testIntList =[  \r\n, \r\n] ");
+            },
+            [](const figcone::ConfigError& e)
+            {
+                ASSERT_EQ(std::string{e.what()}, "[line:2, column:1] Parameter list 'testIntList' element is missing");
+            });
+}
+
 
 } //namespace test_paramlistparser
