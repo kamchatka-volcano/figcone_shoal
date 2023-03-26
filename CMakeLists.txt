@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(figcone_shoal VERSION 0.4.0 DESCRIPTION "shoal parser for figcone library")
+project(figcone_shoal VERSION 0.5.0 DESCRIPTION "shoal parser for figcone library")
 include(GNUInstallDirs)
 include(external/seal_lake)
 
@@ -14,7 +14,7 @@ SealLake_Import(
 SealLake_Bundle(
         NAME figcone_shoal_sfun
         GIT_REPOSITORY https://github.com/kamchatka-volcano/sfun.git
-        GIT_TAG        v3.1.0
+        GIT_TAG        v3.2.0
         TEXT_REPLACEMENTS
             "namespace sfun" "namespace figcone::shoal::sfun"
             SFUN_ FIGCONE_SHOAL_SFUN
