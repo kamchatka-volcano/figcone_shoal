@@ -170,7 +170,6 @@ TEST(TestParamParser, Multiword5CRLF)
     EXPECT_EQ(param.value(), "hello world ");
 }
 
-
 TEST(TestParamParser, ParamWithoutAssignmentError)
 {
     assert_exception<figcone::ConfigError>(

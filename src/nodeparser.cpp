@@ -106,9 +106,19 @@ std::optional<ConfigReadResult> parseListElementNodeSection(
                         "on the same line with list separator '###'",
                 stream.position()};
 
-    auto& nodeList = parent.asList();
-    auto& newNode = nodeList.addNode(stream.position());
-    auto readResult = parseNode(stream, newNode, parentName);
+    skipWhitespace(stream, true);
+
+    const auto readResult = [&]()->ConfigReadResult{
+        if (stream.atEnd())
+            return {ConfigReadResult::NextAction::ReturnToRootNode, {}, {}};
+        else if (stream.peek() == "-")
+            return readEndToken(stream);
+        else {
+            auto& nodeList = parent.asList();
+            auto& newNode = nodeList.addNode(stream.position());
+            return parseNode(stream, newNode, parentName);
+        }
+    }();
 
     auto result = checkReadResult(readResult, parentName, parent);
     if (result.nextAction != ConfigReadResult::NextAction::ContinueReading) {

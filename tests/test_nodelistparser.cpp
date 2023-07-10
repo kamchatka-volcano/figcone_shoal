@@ -384,6 +384,152 @@ TEST(TestNodeListParser, NestedCfg2List)
     }
 }
 
+TEST(TestNodeListParser, EmptyNodeList)
+{
+    auto result = parse(R"(
+        testStr = Hello
+        #testNodes:
+        ###
+        ---
+    )");
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_EQ(tree.hasParam("testStr"), 1);
+    EXPECT_EQ(tree.param("testStr").value(), "Hello");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("testNodes"), 1);
+    auto& testNodes = tree.node("testNodes").asList();
+    ASSERT_EQ(testNodes.count(), 0);
+}
+
+TEST(TestNodeListParser, EmptyNodeList2)
+{
+    auto result = parse(R"(
+        testStr = Hello
+        #testNodes:
+        ###
+    )");
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_EQ(tree.hasParam("testStr"), 1);
+    EXPECT_EQ(tree.param("testStr").value(), "Hello");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("testNodes"), 1);
+    auto& testNodes = tree.node("testNodes").asList();
+    ASSERT_EQ(testNodes.count(), 0);
+}
+
+TEST(TestNodeListParser, NestedEmptyCloseToRoot)
+{
+    auto result = parse(R"(
+        #testCfg:
+            testStr = Hello
+            #testNodes:
+            ###
+            ---
+        testDouble = 0.5
+    )");
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_EQ(tree.hasParam("testDouble"), 1);
+    EXPECT_EQ(tree.param("testDouble").value(), "0.5");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("testCfg"), 1);
+    auto& testCfg = tree.node("testCfg").asItem();
+    ASSERT_EQ(testCfg.paramsCount(), 1);
+    ASSERT_EQ(testCfg.hasParam("testStr"), 1);
+    EXPECT_EQ(testCfg.param("testStr").value(), "Hello");
+    ASSERT_EQ(testCfg.nodesCount(), 1);
+    ASSERT_EQ(testCfg.hasNode("testNodes"), 1);
+    auto& testNodes = testCfg.node("testNodes").asList();
+    ASSERT_EQ(testNodes.count(), 0);
+}
+
+TEST(TestNodeListParser, NestedEmptyClosedByName)
+{
+    auto result = parse(R"(
+        #testCfg:
+            testStr = Hello
+            #testNodes:
+            ###
+        --testCfg
+        testDouble = 0.5
+    )");
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_EQ(tree.hasParam("testDouble"), 1);
+    EXPECT_EQ(tree.param("testDouble").value(), "0.5");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("testCfg"), 1);
+    auto& testCfg = tree.node("testCfg").asItem();
+    ASSERT_EQ(testCfg.paramsCount(), 1);
+    ASSERT_EQ(testCfg.hasParam("testStr"), 1);
+    EXPECT_EQ(testCfg.param("testStr").value(), "Hello");
+    ASSERT_EQ(testCfg.nodesCount(), 1);
+    ASSERT_EQ(testCfg.hasNode("testNodes"), 1);
+    auto& testNodes = testCfg.node("testNodes").asList();
+    ASSERT_EQ(testNodes.count(), 0);
+}
+
+TEST(TestNodeListParser, NestedEmptyCfgList)
+{
+    auto result = parse(R"(
+        #testList:
+        ###
+            testStr = Hello
+            #testNodes:
+            ###
+            -
+        ###
+            #testNodes:
+            ###
+                testInt = 5
+            -
+            testStr = World
+        -
+        testStr = Hello
+    )");
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_EQ(tree.hasParam("testStr"), 1);
+    EXPECT_EQ(tree.param("testStr").value(), "Hello");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("testList"), 1);
+    auto& testList = tree.node("testList").asList();
+    ASSERT_EQ(testList.count(), 2);
+    {
+        auto& nodeData = testList.node(0).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_EQ(nodeData.hasParam("testStr"), 1);
+        EXPECT_EQ(nodeData.param("testStr").value(), "Hello");
+        ASSERT_EQ(nodeData.nodesCount(), 1);
+        ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
+        auto& testNodes = nodeData.node("testNodes").asList();
+        ASSERT_EQ(testNodes.count(), 0);
+    }
+    {
+        auto& nodeData = testList.node(1).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_EQ(nodeData.hasParam("testStr"), 1);
+        EXPECT_EQ(nodeData.param("testStr").value(), "World");
+        ASSERT_EQ(nodeData.nodesCount(), 1);
+        ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
+        auto& testNodes = nodeData.node("testNodes").asList();
+        ASSERT_EQ(testNodes.count(), 1);
+        {
+            auto& childNodeData = testNodes.node(0).asItem();
+            ASSERT_EQ(childNodeData.paramsCount(), 1);
+            ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
+            EXPECT_EQ(childNodeData.param("testInt").value(), "5");
+        }
+    }
+}
+
 TEST(TestNodeListParser, InvalidListSeparatorLineError)
 {
     assert_exception<figcone::ConfigError>(
