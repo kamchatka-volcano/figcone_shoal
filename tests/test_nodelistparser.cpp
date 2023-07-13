@@ -421,6 +421,23 @@ TEST(TestNodeListParser, EmptyNodeList2)
     ASSERT_EQ(testNodes.count(), 0);
 }
 
+TEST(TestNodeListParser, EmptyNodeList3)
+{
+    auto result = parse(R"(
+        testStr = Hello
+        #testNodes:
+        ###)");
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_EQ(tree.hasParam("testStr"), 1);
+    EXPECT_EQ(tree.param("testStr").value(), "Hello");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_EQ(tree.hasNode("testNodes"), 1);
+    auto& testNodes = tree.node("testNodes").asList();
+    ASSERT_EQ(testNodes.count(), 0);
+}
+
 TEST(TestNodeListParser, NestedEmptyCloseToRoot)
 {
     auto result = parse(R"(

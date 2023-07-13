@@ -98,6 +98,9 @@ std::optional<ConfigReadResult> parseListElementNodeSection(
 
     stream.skip(3);
     skipWhitespace(stream, false);
+    if (stream.atEnd())
+        return ConfigReadResult{ConfigReadResult::NextAction::ReturnToRootNode, {}, {}};
+
     if (stream.peek() != "\n")
         throw ConfigError{
                 "Wrong config node list '" + parentName +
@@ -107,7 +110,6 @@ std::optional<ConfigReadResult> parseListElementNodeSection(
                 stream.position()};
 
     skipWhitespace(stream, true);
-
     const auto readResult = [&]()->ConfigReadResult{
         if (stream.atEnd())
             return {ConfigReadResult::NextAction::ReturnToRootNode, {}, {}};
