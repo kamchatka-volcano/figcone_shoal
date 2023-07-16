@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(figcone_shoal VERSION 0.6.1 DESCRIPTION "shoal parser for figcone library")
+project(figcone_shoal VERSION 0.6.2 DESCRIPTION "shoal parser for figcone library")
 include(GNUInstallDirs)
 include(external/seal_lake)
 
 set(INSTALL_FIGCONE_TREE ON)
 SealLake_Import(
-        figcone_tree 1.0.0
+        figcone_tree 1.0.1
         GIT_REPOSITORY https://github.com/kamchatka-volcano/figcone_tree.git
-        GIT_TAG        v1.0.0
+        GIT_TAG        v1.0.1
 )
 
 SealLake_Bundle(
@@ -44,7 +44,7 @@ SealLake_ObjectLibrary(
         LIBRARIES Microsoft.figcone_shoal_gsl::figcone_shoal_gsl figcone_shoal_sfun::figcone_shoal_sfun
         INTERFACE_LIBRARIES figcone::figcone_tree
         DEPENDENCIES
-            figcone_tree 1.0.0
+            figcone_tree 1.0.1
 )
 
 SealLake_OptionalBuildSteps(tests)
