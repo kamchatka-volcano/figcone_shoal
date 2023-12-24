@@ -22,7 +22,7 @@ TEST(TestNodeParser, SingleNodeSingleLevel)
           testInt = 10
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -44,7 +44,7 @@ TEST(TestNodeParser, SingleNodeSingleLevelCR)
             "  testInt = 10\r"
     );
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -67,7 +67,7 @@ TEST(TestNodeParser, SingleNodeSingleLevelCRLF)
         "  testInt = 10\r\n"
     );
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -93,7 +93,7 @@ TEST(TestNodeParser, MultiNodeSingleLevel)
           testInt = 11
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -126,7 +126,7 @@ TEST(TestNodeParser, MultiLevel)
           testInt = 9
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -171,7 +171,7 @@ TEST(TestNodeParser, MultiLevelWithComments)
         -                               ;test comment#7
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -214,7 +214,7 @@ TEST(TestNodeParser, MultiLevelParamAfterNode)
           testInt = 9
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -256,7 +256,7 @@ TEST(TestNodeParser, MultiLevelCloseByName)
           testInt = 9
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -299,7 +299,7 @@ TEST(TestNodeParser, MultiLevelClose)
           testInt = 9
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);

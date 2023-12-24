@@ -22,22 +22,22 @@ TEST(TestNodeListParser, Basic)
             testInt = 2
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testNodes"), 1);
     auto& testNodes = tree.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 2);
+    ASSERT_EQ(testNodes.size(), 2);
     {
-        auto& nodeData = testNodes.node(0).asItem();
+        auto& nodeData = testNodes.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "3");
     }
     {
-        auto& nodeData = testNodes.node(1).asItem();
+        auto& nodeData = testNodes.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "2");
@@ -55,22 +55,22 @@ TEST(TestNodeListParser, BasicCR)
             "    testInt = 2\r"
     );
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testNodes"), 1);
     auto& testNodes = tree.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 2);
+    ASSERT_EQ(testNodes.size(), 2);
     {
-        auto& nodeData = testNodes.node(0).asItem();
+        auto& nodeData = testNodes.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "3");
     }
     {
-        auto& nodeData = testNodes.node(1).asItem();
+        auto& nodeData = testNodes.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "2");
@@ -88,22 +88,22 @@ TEST(TestNodeListParser, BasicCRLF)
         "    testInt = 2\r\n"
     );
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testNodes"), 1);
     auto& testNodes = tree.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 2);
+    ASSERT_EQ(testNodes.size(), 2);
     {
-        auto& nodeData = testNodes.node(0).asItem();
+        auto& nodeData = testNodes.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "3");
     }
     {
-        auto& nodeData = testNodes.node(1).asItem();
+        auto& nodeData = testNodes.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "2");
@@ -123,22 +123,22 @@ TEST(TestNodeListParser, BasicClosedManually)
         testStr = Hello
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testNodes"), 1);
     auto& testNodes = tree.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 2);
+    ASSERT_EQ(testNodes.size(), 2);
     {
-        auto& nodeData = testNodes.node(0).asItem();
+        auto& nodeData = testNodes.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "3");
     }
     {
-        auto& nodeData = testNodes.node(1).asItem();
+        auto& nodeData = testNodes.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "2");
@@ -158,22 +158,22 @@ TEST(TestNodeListParser, BasicClosedByName)
         testStr = Hello
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testNodes"), 1);
     auto& testNodes = tree.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 2);
+    ASSERT_EQ(testNodes.size(), 2);
     {
-        auto& nodeData = testNodes.node(0).asItem();
+        auto& nodeData = testNodes.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "3");
     }
     {
-        auto& nodeData = testNodes.node(1).asItem();
+        auto& nodeData = testNodes.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "2");
@@ -194,7 +194,7 @@ TEST(TestNodeListParser, NestedCloseToRoot)
         testDouble = 0.5
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testDouble"), 1);
     EXPECT_EQ(tree.param("testDouble").value(), "0.5");
@@ -207,15 +207,15 @@ TEST(TestNodeListParser, NestedCloseToRoot)
     ASSERT_EQ(testCfg.nodesCount(), 1);
     ASSERT_EQ(testCfg.hasNode("testNodes"), 1);
     auto& testNodes = testCfg.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 2);
+    ASSERT_EQ(testNodes.size(), 2);
     {
-        auto& nodeData = testNodes.node(0).asItem();
+        auto& nodeData = testNodes.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "3");
     }
     {
-        auto& nodeData = testNodes.node(1).asItem();
+        auto& nodeData = testNodes.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "2");
@@ -236,7 +236,7 @@ TEST(TestNodeListParser, NestedClosedByName)
         testDouble = 0.5
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testDouble"), 1);
     EXPECT_EQ(tree.param("testDouble").value(), "0.5");
@@ -249,15 +249,15 @@ TEST(TestNodeListParser, NestedClosedByName)
     ASSERT_EQ(testCfg.nodesCount(), 1);
     ASSERT_EQ(testCfg.hasNode("testNodes"), 1);
     auto& testNodes = testCfg.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 2);
+    ASSERT_EQ(testNodes.size(), 2);
     {
-        auto& nodeData = testNodes.node(0).asItem();
+        auto& nodeData = testNodes.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "3");
     }
     {
-        auto& nodeData = testNodes.node(1).asItem();
+        auto& nodeData = testNodes.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testInt"), 1);
         EXPECT_EQ(nodeData.param("testInt").value(), "2");
@@ -286,47 +286,47 @@ TEST(TestNodeListParser, NestedCfgList)
         testStr = Hello
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testList"), 1);
     auto& testList = tree.node("testList").asList();
-    ASSERT_EQ(testList.count(), 2);
+    ASSERT_EQ(testList.size(), 2);
     {
-        auto& nodeData = testList.node(0).asItem();
+        auto& nodeData = testList.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testStr"), 1);
         EXPECT_EQ(nodeData.param("testStr").value(), "Hello");
         ASSERT_EQ(nodeData.nodesCount(), 1);
         ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
         auto& testNodes = nodeData.node("testNodes").asList();
-        ASSERT_EQ(testNodes.count(), 2);
+        ASSERT_EQ(testNodes.size(), 2);
         {
-            auto& childNodeData = testNodes.node(0).asItem();
+            auto& childNodeData = testNodes.at(0).asItem();
             ASSERT_EQ(childNodeData.paramsCount(), 1);
             ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
             EXPECT_EQ(childNodeData.param("testInt").value(), "3");
         }
         {
-            auto& childNodeData = testNodes.node(1).asItem();
+            auto& childNodeData = testNodes.at(1).asItem();
             ASSERT_EQ(childNodeData.paramsCount(), 1);
             ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
             EXPECT_EQ(childNodeData.param("testInt").value(), "33");
         }
     }
     {
-        auto& nodeData = testList.node(1).asItem();
+        auto& nodeData = testList.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testStr"), 1);
         EXPECT_EQ(nodeData.param("testStr").value(), "World");
         ASSERT_EQ(nodeData.nodesCount(), 1);
         ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
         auto& testNodes = nodeData.node("testNodes").asList();
-        ASSERT_EQ(testNodes.count(), 1);
+        ASSERT_EQ(testNodes.size(), 1);
         {
-            auto& childNodeData = testNodes.node(0).asItem();
+            auto& childNodeData = testNodes.at(0).asItem();
             ASSERT_EQ(childNodeData.paramsCount(), 1);
             ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
             EXPECT_EQ(childNodeData.param("testInt").value(), "5");
@@ -350,16 +350,16 @@ TEST(TestNodeListParser, NestedCfg2List)
         testStr = Hello
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testList"), 1);
     auto& testList = tree.node("testList").asList();
-    ASSERT_EQ(testList.count(), 2);
+    ASSERT_EQ(testList.size(), 2);
     {
-        auto& nodeData = testList.node(0).asItem();
+        auto& nodeData = testList.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testDouble"), 1);
         EXPECT_EQ(nodeData.param("testDouble").value(), "3.0");
@@ -371,7 +371,7 @@ TEST(TestNodeListParser, NestedCfg2List)
         EXPECT_EQ(testNode.param("testInt").value(), "3");
     }
     {
-        auto& nodeData = testList.node(1).asItem();
+        auto& nodeData = testList.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testDouble"), 1);
         EXPECT_EQ(nodeData.param("testDouble").value(), "5.0");
@@ -393,14 +393,14 @@ TEST(TestNodeListParser, EmptyNodeList)
         ---
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testNodes"), 1);
     auto& testNodes = tree.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 0);
+    ASSERT_EQ(testNodes.size(), 0);
 }
 
 TEST(TestNodeListParser, EmptyNodeList2)
@@ -411,14 +411,14 @@ TEST(TestNodeListParser, EmptyNodeList2)
         ###
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testNodes"), 1);
     auto& testNodes = tree.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 0);
+    ASSERT_EQ(testNodes.size(), 0);
 }
 
 TEST(TestNodeListParser, EmptyNodeList3)
@@ -428,14 +428,14 @@ TEST(TestNodeListParser, EmptyNodeList3)
         #testNodes:
         ###)");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testNodes"), 1);
     auto& testNodes = tree.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 0);
+    ASSERT_EQ(testNodes.size(), 0);
 }
 
 TEST(TestNodeListParser, NestedEmptyCloseToRoot)
@@ -449,7 +449,7 @@ TEST(TestNodeListParser, NestedEmptyCloseToRoot)
         testDouble = 0.5
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testDouble"), 1);
     EXPECT_EQ(tree.param("testDouble").value(), "0.5");
@@ -462,7 +462,7 @@ TEST(TestNodeListParser, NestedEmptyCloseToRoot)
     ASSERT_EQ(testCfg.nodesCount(), 1);
     ASSERT_EQ(testCfg.hasNode("testNodes"), 1);
     auto& testNodes = testCfg.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 0);
+    ASSERT_EQ(testNodes.size(), 0);
 }
 
 TEST(TestNodeListParser, NestedEmptyClosedByName)
@@ -476,7 +476,7 @@ TEST(TestNodeListParser, NestedEmptyClosedByName)
         testDouble = 0.5
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testDouble"), 1);
     EXPECT_EQ(tree.param("testDouble").value(), "0.5");
@@ -489,7 +489,7 @@ TEST(TestNodeListParser, NestedEmptyClosedByName)
     ASSERT_EQ(testCfg.nodesCount(), 1);
     ASSERT_EQ(testCfg.hasNode("testNodes"), 1);
     auto& testNodes = testCfg.node("testNodes").asList();
-    ASSERT_EQ(testNodes.count(), 0);
+    ASSERT_EQ(testNodes.size(), 0);
 }
 
 TEST(TestNodeListParser, NestedEmptyCfgList)
@@ -511,35 +511,35 @@ TEST(TestNodeListParser, NestedEmptyCfgList)
         testStr = Hello
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 1);
     ASSERT_EQ(tree.hasParam("testStr"), 1);
     EXPECT_EQ(tree.param("testStr").value(), "Hello");
     ASSERT_EQ(tree.nodesCount(), 1);
     ASSERT_EQ(tree.hasNode("testList"), 1);
     auto& testList = tree.node("testList").asList();
-    ASSERT_EQ(testList.count(), 2);
+    ASSERT_EQ(testList.size(), 2);
     {
-        auto& nodeData = testList.node(0).asItem();
+        auto& nodeData = testList.at(0).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testStr"), 1);
         EXPECT_EQ(nodeData.param("testStr").value(), "Hello");
         ASSERT_EQ(nodeData.nodesCount(), 1);
         ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
         auto& testNodes = nodeData.node("testNodes").asList();
-        ASSERT_EQ(testNodes.count(), 0);
+        ASSERT_EQ(testNodes.size(), 0);
     }
     {
-        auto& nodeData = testList.node(1).asItem();
+        auto& nodeData = testList.at(1).asItem();
         ASSERT_EQ(nodeData.paramsCount(), 1);
         ASSERT_EQ(nodeData.hasParam("testStr"), 1);
         EXPECT_EQ(nodeData.param("testStr").value(), "World");
         ASSERT_EQ(nodeData.nodesCount(), 1);
         ASSERT_EQ(nodeData.hasNode("testNodes"), 1);
         auto& testNodes = nodeData.node("testNodes").asList();
-        ASSERT_EQ(testNodes.count(), 1);
+        ASSERT_EQ(testNodes.size(), 1);
         {
-            auto& childNodeData = testNodes.node(0).asItem();
+            auto& childNodeData = testNodes.at(0).asItem();
             ASSERT_EQ(childNodeData.paramsCount(), 1);
             ASSERT_EQ(childNodeData.hasParam("testInt"), 1);
             EXPECT_EQ(childNodeData.param("testInt").value(), "5");

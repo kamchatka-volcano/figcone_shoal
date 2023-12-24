@@ -23,7 +23,7 @@ namespace figcone::shoal {
 
 class Parser : public IParser {
 public:
-    TreeNode parse(std::istream& stream) override;
+    Tree parse(std::istream& stream) override;
 };
 
 } //namespace figcone::shoal

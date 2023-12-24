@@ -117,7 +117,7 @@ std::optional<ConfigReadResult> parseListElementNodeSection(
             return readEndToken(stream);
         else {
             auto& nodeList = parent.asList();
-            auto& newNode = nodeList.addNode(stream.position());
+            auto& newNode = nodeList.emplaceBack(stream.position());
             return parseNode(stream, newNode, parentName);
         }
     }();

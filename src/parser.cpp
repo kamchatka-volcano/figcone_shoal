@@ -4,11 +4,11 @@
 
 namespace figcone::shoal {
 
-TreeNode Parser::parse(std::istream& stream)
+Tree Parser::parse(std::istream& stream)
 {
     auto inputStream = detail::Stream{stream};
     auto rootNode = makeTreeRoot();
-    detail::parseNode(inputStream, rootNode, "");
+    detail::parseNode(inputStream, *rootNode, "");
     return rootNode;
 }
 
