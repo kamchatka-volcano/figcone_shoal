@@ -10,7 +10,7 @@ namespace figcone::shoal::detail {
 
 std::string readNodeName(Stream& stream)
 {
-    auto firstChar = stream.read();
+    const auto firstChar = stream.read();
     Expects(firstChar == "#");
 
     auto nodeName = std::string{};
@@ -20,7 +20,7 @@ std::string readNodeName(Stream& stream)
 
         if (stream.peek() == ":") {
             stream.skip(1);
-            auto pos = stream.position();
+            const auto pos = stream.position();
             if (!isBlank(readUntil(stream, "\n")))
                 throw ConfigError{
                         "Wrong config node '" + nodeName +
@@ -48,12 +48,12 @@ ConfigReadResult readEndToken(Stream& stream)
         return {ConfigReadResult::NextAction::ReturnToRootNode, {}, {}};
     }
 
-    auto pos = stream.position();
-    auto nextChar = stream.read();
+    const auto pos = stream.position();
+    const auto nextChar = stream.read();
     if (nextChar != "-")
         throw ConfigError{"Invalid closing token '-" + nextChar + "'", pos};
 
-    auto parentConfigNode = readWord(stream);
+    const auto parentConfigNode = readWord(stream);
     return {ConfigReadResult::NextAction::ReturnToNodeByName, parentConfigNode, pos};
 }
 
@@ -133,8 +133,8 @@ std::optional<ConfigReadResult> parseListElementNodeSection(
 
 std::optional<ConfigReadResult> parseNodeSection(Stream& stream, figcone::TreeNode& parent)
 {
-    auto pos = stream.position();
-    auto newNodeName = readNodeName(stream);
+    const auto pos = stream.position();
+    const auto newNodeName = readNodeName(stream);
     if (isBlank(newNodeName))
         throw ConfigError{"Config node name can't be blank", pos};
     skipWhitespace(stream);
@@ -149,7 +149,7 @@ std::optional<ConfigReadResult> parseNodeSection(Stream& stream, figcone::TreeNo
             return parent.asItem().addNode(newNodeName, pos);
     }();
 
-    auto readResult = parseNode(stream, newNode, newNodeName);
+    const auto readResult = parseNode(stream, newNode, newNodeName);
     auto result = checkReadResult(readResult, newNodeName, parent);
     if (result.nextAction != ConfigReadResult::NextAction::ContinueReading) {
         if (result.nextAction == ConfigReadResult::NextAction::ReturnToParentNode)
@@ -162,7 +162,7 @@ std::optional<ConfigReadResult> parseNodeSection(Stream& stream, figcone::TreeNo
 ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const std::string& nodeName)
 {
     while (!stream.atEnd()) {
-        auto nextChar = stream.peek().front();
+        const auto nextChar = stream.peek().front();
         if (std::isspace(nextChar))
             stream.skip(1);
         else if (stream.peek(3) == "###") {
@@ -176,7 +176,7 @@ ConfigReadResult parseNode(Stream& stream, figcone::TreeNode& node, const std::s
         else if (nextChar == '-')
             return readEndToken(stream);
         else {
-            auto [paramName, param] = parseParam(stream);
+            const auto [paramName, param] = parseParam(stream);
             if (param.isItem())
                 node.asItem().addParam(paramName, param.value());
             else

@@ -22,7 +22,7 @@ void skipLine(Stream& stream)
 void skipWhitespace(Stream& stream, bool withNewLine)
 {
     while (!stream.atEnd()) {
-        auto nextChar = stream.peek().front();
+        const auto nextChar = stream.peek().front();
         if (!withNewLine && nextChar == '\n')
             return;
 
@@ -69,7 +69,7 @@ std::optional<std::string> readQuotedString(Stream& stream)
     if (stream.atEnd())
         return {};
 
-    auto quotationMark = stream.peek().front();
+    const auto quotationMark = stream.peek().front();
     if (quotationMark != '\'' && quotationMark != '"' && quotationMark != '`')
         return {};
 
@@ -79,7 +79,7 @@ std::optional<std::string> readQuotedString(Stream& stream)
             {
                 stream.skipComments(true);
             });
-    auto pos = stream.position();
+    const auto pos = stream.position();
     stream.skip(1);
 
     if (stream.peek() == "\n")
@@ -87,7 +87,7 @@ std::optional<std::string> readQuotedString(Stream& stream)
 
     auto result = std::string{};
     while (!stream.atEnd()) {
-        auto ch = stream.read().front();
+        const auto ch = stream.read().front();
         if (ch == quotationMark)
             return result;
         result += ch;

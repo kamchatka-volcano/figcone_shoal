@@ -36,8 +36,7 @@ std::optional<std::string> readSingleParam(
                     stream.skipComments(true);
             });
 
-    auto quotedParam = readQuotedString(stream);
-    if (quotedParam)
+    if (const auto quotedParam = readQuotedString(stream))
         return *quotedParam;
     else {
         auto result = sfun::trim(readUntil(stream, wordSeparator + "\n"));
@@ -118,14 +117,14 @@ figcone::TreeParam readParamValue(Stream& stream, const std::string& paramName, 
 std::pair<std::string, figcone::TreeParam> parseParam(Stream& stream)
 {
     skipWhitespace(stream);
-    auto paramPos = stream.position();
+    const auto paramPos = stream.position();
     auto paramName = readWord(stream, "=");
     if (paramName.empty())
         throw ConfigError{"Parameter's name can't be empty", paramPos};
 
     skipParamWhitespace(stream, paramName);
 
-    auto pos = stream.position();
+    const auto pos = stream.position();
     if (stream.read() != "=")
         throw ConfigError{"Wrong param '" + paramName + "' format: missing '='", pos};
 

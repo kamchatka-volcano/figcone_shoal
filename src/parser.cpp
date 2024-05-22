@@ -9,7 +9,7 @@ Tree Parser::parse(std::istream& stream)
     auto inputStream = detail::Stream{stream};
     auto rootNode = makeTreeRoot();
     detail::parseNode(inputStream, *rootNode, "");
-    return rootNode;
+    return Tree{std::move(rootNode)};
 }
 
 } //namespace figcone::shoal
